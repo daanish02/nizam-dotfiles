@@ -1,0 +1,6 @@
+# Infrastructure
+cron.service
+fail2ban.service
+ufw.service
+unattended-upgrades.service
+ssh.socket
