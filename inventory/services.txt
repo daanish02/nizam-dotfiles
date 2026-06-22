@@ -1,6 +1,5 @@
-# Infrastructure|not-found
-cron.service|enabled
-fail2ban.service|enabled
-ssh.socket|enabled
-ufw.service|enabled
-unattended-upgrades.service|enabled
+cron.service | enabled
+fail2ban.service | enabled
+ssh.socket | enabled
+ufw.service | enabled
+unattended-upgrades.service | enabled
