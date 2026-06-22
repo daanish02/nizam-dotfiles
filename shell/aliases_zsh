@@ -1,0 +1,56 @@
+# Navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias c='clear'
+alias h='history'
+alias hs='history | tail -20'
+
+# File Management
+alias ls='eza --icons'
+alias la='eza -a --icons'
+alias ll='eza -lah --icons'
+alias lt='eza --tree --level=2 --icons'
+alias tree='eza --tree --icons'
+
+alias cat='batcat'
+alias fd='fdfind'
+
+alias df='df -h'
+alias du='du -h'
+
+# Development
+alias py='python3'
+alias activate='source .venv/bin/activate'
+alias nv='nvim'
+
+alias urlencode='python3 -c "import sys, urllib.parse as p; print(p.quote(sys.stdin.read().strip()))"'
+alias urldecode='python3 -c "import sys, urllib.parse as p; print(p.unquote(sys.stdin.read().strip()))"'
+
+alias calc='python3 -c'
+
+# Git
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gd='git diff'
+alias gb='git branch -a'
+alias gl='git log --oneline --graph --decorate -20'
+
+alias gsall='~/.nizam-dotfiles/scripts/git-status.sh'
+
+# System & Networking
+alias update='sudo apt update && sudo apt upgrade'
+
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+
+alias ports='ss -tulanp'
+alias myip='curl -s ifconfig.me'
+alias pingg='ping -c 4 google.com'
+
+alias mem='ps aux --sort=-%mem | head -11'
+alias cpu='ps aux --sort=-%cpu | head -11'
+
+alias cal='ncal -C'
