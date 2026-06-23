@@ -3,9 +3,10 @@ Description=Watch nizam.env and encrypt on changes
 
 [Service]
 Type=simple
-ExecStart=%h/.nizam-dotfiles/scripts/watch-env.sh
+User=vazir
+ExecStart=/home/vazir/.nizam-dotfiles/scripts/watch-env.sh
 Restart=always
 RestartSec=2
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target
