@@ -1,5 +1,11 @@
 cron.service | enabled
 fail2ban.service | enabled
+grafana-server.service | enabled
+postgresql.service | enabled
+prometheus-node-exporter.service | enabled
+prometheus.service | enabled
+redis-server.service | enabled
 ssh.socket | enabled
+tailscaled.service | enabled
 ufw.service | enabled
 unattended-upgrades.service | enabled
