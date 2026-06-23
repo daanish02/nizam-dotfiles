@@ -11,3 +11,4 @@ prometheus.service
 redis-server.service
 tailscaled.service
 watcher-env.service
+watcher-inventory.timer

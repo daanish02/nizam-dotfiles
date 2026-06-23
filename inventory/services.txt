@@ -9,4 +9,5 @@ ssh.socket | system | active
 tailscaled.service | system | active
 ufw.service | system | active
 unattended-upgrades.service | system | active
-watcher-env.service | user | active
+watcher-env.service | system | active
+watcher-inventory.timer | system | active
