@@ -68,7 +68,7 @@ zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
-# . "$HOME/.local/bin/env"
+export PATH="$HOME/.local/bin:$PATH"
 
 # Aliases
 [[ -f ~/.nizam-dotfiles/shell/aliases-zsh ]] && source ~/.nizam-dotfiles/shell/aliases-zsh
