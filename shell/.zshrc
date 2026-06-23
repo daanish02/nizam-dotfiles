@@ -71,7 +71,7 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 # . "$HOME/.local/bin/env"
 
 # Aliases
-[[ -f ~/.nizam-dotfiles/shell/aliases_zsh ]] && source ~/.nizam-dotfiles/shell/aliases_zsh
+[[ -f ~/.nizam-dotfiles/shell/aliases-zsh ]] && source ~/.nizam-dotfiles/shell/aliases-zsh
 
 # Functions
 weather() {
