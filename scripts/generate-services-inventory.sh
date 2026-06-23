@@ -10,15 +10,20 @@ TRACKED="$HOME/.nizam-dotfiles/inventory/tracked-services.txt"
 
 service_status() {
     local svc="$1"
+    local status
 
     if systemctl --user list-unit-files "$svc" --no-legend 2>/dev/null | grep -q "^$svc"; then
+        status=$(systemctl --user is-active "$svc" 2>/dev/null || true)
         printf '%s | user | %s\n' \
             "$svc" \
-            "$(systemctl --user is-active "$svc" 2>/dev/null || echo inactive)"
+            "${status:-inactive}"
+
     elif systemctl list-unit-files "$svc" --no-legend 2>/dev/null | grep -q "^$svc"; then
+        status=$(systemctl is-active "$svc" 2>/dev/null || true)
         printf '%s | system | %s\n' \
             "$svc" \
-            "$(systemctl is-active "$svc" 2>/dev/null || echo inactive)"
+            "${status:-inactive}"
+
     else
         printf '%s | - | not-found\n' "$svc"
     fi
