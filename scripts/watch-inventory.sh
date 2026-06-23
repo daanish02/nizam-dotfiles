@@ -60,3 +60,16 @@ echo "$SOFTWARE_NEW_HASH" > "$SOFTWARE_HASH"
 echo "$SERVICES_NEW_HASH" > "$SERVICES_HASH"
 
 echo "Inventory changed"
+
+ENV_FILE="$HOME/.nizam-dotfiles/secrets/nizam.env"
+if [ -f "$ENV_FILE" ]; then
+    # shellcheck source=/dev/null
+    source "$ENV_FILE"
+fi
+
+if [ -n "${NIZAM_INVENTORY_WATCHER:-}" ]; then
+    curl -s \
+        -F "payload_json={\"content\":\"Hey, something changed in your system inventory. Diff attached for context.\"}" \
+        -F "file=@${DIFF_FILE};filename=inventory.diff" \
+        "$NIZAM_INVENTORY_WATCHER" > /dev/null
+fi
