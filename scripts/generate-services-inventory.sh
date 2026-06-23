@@ -8,12 +8,23 @@ TRACKED="$HOME/.nizam-dotfiles/inventory/tracked-services.txt"
     exit 1
 }
 
-grep -vE '^\s*#|^\s*$' "$TRACKED" | while read -r svc; do
-    if systemctl status "$svc" >/dev/null 2>&1; then
-        echo "$svc | system | $(systemctl is-active "$svc")"
-    elif systemctl --user status "$svc" >/dev/null 2>&1; then
-        echo "$svc | user | $(systemctl --user is-active "$svc")"
+service_status() {
+    local svc="$1"
+
+    if systemctl --user list-unit-files "$svc" --no-legend 2>/dev/null | grep -q "^$svc"; then
+        printf '%s | user | %s\n' \
+            "$svc" \
+            "$(systemctl --user is-active "$svc" 2>/dev/null || echo inactive)"
+    elif systemctl list-unit-files "$svc" --no-legend 2>/dev/null | grep -q "^$svc"; then
+        printf '%s | system | %s\n' \
+            "$svc" \
+            "$(systemctl is-active "$svc" 2>/dev/null || echo inactive)"
     else
-        echo "$svc | - | not-found"
+        printf '%s | - | not-found\n' "$svc"
     fi
+}
+
+grep -vE '^\s*#|^\s*$' "$TRACKED" |
+while read -r svc; do
+    service_status "$svc"
 done | sort
