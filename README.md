@@ -20,6 +20,7 @@ This repo covers shell, git, systemd services, secrets management, and system in
 ├── systemd/            # Systemd unit files (symlinked to /etc/systemd/system/)
 ├── scripts/            # All automation scripts
 ├── inventory/          # Auto-generated software and service snapshots
+├── grafana/            # Grafana dashboard JSON files
 ├── secrets/            # Encrypted env file and age key
 ├── guides/             # Restore and reference documentation
 ├── .gitconfig          # Git identity and settings
@@ -45,11 +46,17 @@ Config files live here and are symlinked to where the system expects them:
 
 ## Services
 
-Both are system services (survive logout, start on boot):
+All are system services (survive logout, start on boot):
 
 **`watcher-env.service`** — watches `secrets/nizam.env` via inotify and auto-encrypts it on every save using age.
 
-**`watcher-inventory.timer`** + **`watcher-inventory.service`** — runs `watch-inventory.sh` hourly. Compares sha256 hashes of software and service snapshots, writes a diff to `inventory/last.diff` if anything changed.
+**`watcher-inventory.timer`** + **`watcher-inventory.service`** — runs `watch-inventory.sh` hourly. Compares sha256 hashes of software and service snapshots, writes a diff to `inventory/last.diff` if anything changed. Posts to Discord on change.
+
+**`metrics-security.timer`** + **`metrics-security.service`** — runs `metrics-security.sh` every minute. Collects SSH failures, fail2ban bans, and UFW block counts into a Prometheus-compatible file for node-exporter.
+
+## Grafana
+
+`grafana/system-dashboard.json` — importable dashboard covering system resources and security metrics. See `guides/dashboard.md` for how to read it.
 
 ---
 
