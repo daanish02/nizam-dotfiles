@@ -140,14 +140,14 @@ curl -fsSL https://tailscale.com/install.sh | sh
 sudo tailscale up
 
 tailscale status
-tailscale ip -4  # Note Tailscale IP
+tailscale ip -4  # note Tailscale IP
 ```
 
 ---
 
 ## 7. Lock down public SSH
 
-**Do this after Tailscale is running (nizam-os Step 0) — not before.**  
+**Do this after Tailscale is running — not before.**  
 
 Before touching UFW, open a **second terminal** and confirm SSH over Tailscale works:
 
