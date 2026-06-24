@@ -1,6 +1,6 @@
 # Machine Setup — nizam-vps
 
-Fresh Ubuntu 24.04 to a ready machine. Covers the base layer only — shell, security, monitoring.  
+Fresh Ubuntu 24.04 to a ready machine. Covers the base layer only — shell, security, monitoring.
 For Nizam services, continue with `~/.nizam-os/docs/README.md`.
 
 ---
@@ -10,6 +10,7 @@ For Nizam services, continue with `~/.nizam-os/docs/README.md`.
 Run as root on the fresh VPS.
 
 ```bash
+ssh root@<nizam-vps-ip>
 apt update && apt -y upgrade
 timedatectl set-timezone UTC
 hostnamectl set-hostname nizam-vps
@@ -24,6 +25,11 @@ install -d -m 700 -o vazir -g vazir /home/vazir/.ssh
 nano /home/vazir/.ssh/authorized_keys   # paste public key
 chown -R vazir:vazir /home/vazir/.ssh
 chmod 600 /home/vazir/.ssh/authorized_keys
+
+# Generate new SSH key
+ssh-keygen -t ed25519 -C "<key-name>"
+ssh-copy-id vazir@<nizam-vps-ip>
+expiry-time="YYYYMMDD" ssh-ed25519 AAAA...  # Make key expire, edit server's `~/.ssh/authorized_keys`, belt-and-braces
 ```
 
 Log out of root. Everything below runs as `vazir`.
@@ -36,9 +42,8 @@ Ubuntu cloud-init drops its own sshd config that overrides `sshd_config` — wri
 
 ```bash
 sudo nano /etc/ssh/sshd_config.d/99-local.conf
-```
 
-```
+# Paste
 PasswordAuthentication no
 PermitRootLogin no
 PubkeyAuthentication yes
@@ -56,11 +61,12 @@ sudo sshd -T | grep -E 'permitrootlogin|passwordauthentication|pubkeyauthenticat
 ## 2. Security baseline
 
 ```bash
+# Firewall, brute-force, security updates
 sudo apt install -y ufw fail2ban unattended-upgrades
 
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
-sudo ufw allow 22/tcp
+sudo ufw allow 22/tcp  # Must enable before firewall; can close after Tailscale setup
 sudo ufw enable
 
 sudo systemctl enable --now fail2ban
@@ -119,13 +125,35 @@ Collects SSH failures, fail2ban bans, and UFW block counts into a Prometheus-com
 ```bash
 sudo ln -sf ~/.nizam-dotfiles/systemd/metrics-security.service /etc/systemd/system/metrics-security.service
 sudo ln -sf ~/.nizam-dotfiles/systemd/metrics-security.timer /etc/systemd/system/metrics-security.timer
+
 sudo systemctl daemon-reload
 sudo systemctl enable --now prometheus-node-exporter metrics-security.timer
 ```
 
 ---
 
-## 6. Verify
+## 6. Lock down public SSH
+
+**Do this after Tailscale is running (nizam-os Step 0) — not before.**  
+
+Before touching UFW, open a **second terminal** and confirm SSH over Tailscale works:
+
+```bash
+ssh vazir@<tailscale-ip>   # must succeed before you continue
+```
+
+Once confirmed, remove the public port:
+
+```bash
+sudo ufw delete allow 22/tcp
+sudo ufw status   # expected: no rule for port 22
+```
+
+> This takes the server off every internet-wide port scanner and brute-force bot permanently. With the public port open, bots hammer it constantly — key-only auth handles it, but it's still noise and attack surface. Tailscale replaces it with an encrypted tunnel: only devices on your tailnet can reach the server at all, regardless of what's running.
+
+---
+
+## 7. Verify
 
 ```bash
 sudo sshd -T | grep -E 'permitrootlogin|passwordauthentication|pubkeyauthentication'

@@ -18,13 +18,14 @@ This is one of three repos:
 
 ## Repo layout
 
-```
-shell/      .zshrc, .p10k.zsh, aliases-zsh
-systemd/    metrics-security.service + .timer — symlinked to /etc/systemd/system/
-scripts/    metrics-security.sh, git-status.sh
-grafana/    system-dashboard.json — machine + security metrics
-docs/       startup.md, dashboard.md
-.gitconfig  git identity and settings
+```bash
+nizam-dotfile/
+├── shell/      .zshrc, .p10k.zsh, aliases-zsh
+├── systemd/    metrics-security.service + .timer — symlinked to /etc/systemd/system/
+├── scripts/    metrics-security.sh, git-status.sh
+├── grafana/    system-dashboard.json — machine + security metrics
+├── docs/       startup guide, dashboard guide
+└──.gitconfig   git identity and settings
 ```
 
 ## Symlinks
