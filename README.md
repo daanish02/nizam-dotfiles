@@ -1,14 +1,20 @@
 # nizam-dotfiles
 
-System configuration SSOT and restore reference for the Nizam setup.
+Machine configuration for the server that runs Nizam-OS.
 
-This repo covers shell, git, systemd services, secrets management, and system inventory. It is one of three repos that together make up the full system:
+This repo makes the server behave the way you like. It is one of three repos:
 
 | Repo | Purpose |
 |---|---|
-| `~/.nizam-dotfiles` | System configs, shell, services, inventory — this repo |
-| `~/.nizam-os` | Core system: DB migrations, services layer, crons, Hermes orchestration |
-| `~/.nizam-vault` | Obsidian notes |
+| `nizam-dotfiles` | The machine — shell, git, security monitoring — this repo |
+| `nizam-os` | The software — agents, services, configs, dashboards, secrets |
+| `nizam-vault` | Obsidian notes |
+
+**What belongs here:** Config that would exist on this server even without Nizam-OS — shell, git identity, security monitoring.
+
+**What belongs in nizam-os:** Everything needed to run Nizam, including secrets and credentials.
+
+Test: *Would this file belong on a server where I'm not running Nizam-OS?* Yes → here. No → nizam-os.
 
 ---
 
@@ -17,12 +23,10 @@ This repo covers shell, git, systemd services, secrets management, and system in
 ```
 .nizam-dotfiles/
 ├── shell/              # Zsh config and aliases
-├── systemd/            # Systemd unit files (symlinked to /etc/systemd/system/)
-├── scripts/            # All automation scripts
-├── inventory/          # Auto-generated software and service snapshots
-├── grafana/            # Grafana dashboard JSON files
-├── secrets/            # Encrypted env file and age key
-├── guides/             # Restore and reference documentation
+├── systemd/            # metrics-security units (symlinked)
+├── scripts/            # metrics-security.sh, git-status.sh
+├── grafana/            # system-dashboard.json — machine/security metrics only
+├── docs/               # System restore guide, dashboard guide
 ├── .gitconfig          # Git identity and settings
 └── .gitignore
 ```
@@ -31,48 +35,28 @@ This repo covers shell, git, systemd services, secrets management, and system in
 
 ## Symlinks
 
-Config files live here and are symlinked to where the system expects them:
-
 | Source (this repo) | Target |
 |---|---|
 | `shell/.zshrc` | `~/.zshrc` |
 | `shell/.p10k.zsh` | `~/.p10k.zsh` |
 | `.gitconfig` | `~/.gitconfig` |
-| `systemd/watcher-env.service` | `/etc/systemd/system/watcher-env.service` |
-| `systemd/watcher-inventory.service` | `/etc/systemd/system/watcher-inventory.service` |
-| `systemd/watcher-inventory.timer` | `/etc/systemd/system/watcher-inventory.timer` |
+
+Nizam-OS manages its own symlinks via `~/.nizam-os/scripts/setup/install-symlinks.sh`.
 
 ---
 
 ## Services
 
-All are system services (survive logout, start on boot):
-
-**`watcher-env.service`** — watches `secrets/nizam.env` via inotify and auto-encrypts it on every save using age.
-
-**`watcher-inventory.timer`** + **`watcher-inventory.service`** — runs `watch-inventory.sh` hourly. Compares sha256 hashes of software and service snapshots, writes a diff to `inventory/last.diff` if anything changed. Posts to Discord on change.
-
 **`metrics-security.timer`** + **`metrics-security.service`** — runs `metrics-security.sh` every minute. Collects SSH failures, fail2ban bans, and UFW block counts into a Prometheus-compatible file for node-exporter.
-
-## Grafana
-
-`grafana/system-dashboard.json` — importable dashboard covering system resources and security metrics. See `guides/dashboard.md` for how to read it.
 
 ---
 
-## Secrets
+## Grafana
 
-`secrets/nizam.env` — plaintext env file, never committed (in `.gitignore`).
-`secrets/nizam.env.enc` — age-encrypted version, committed.
-`secrets/nizam-age-key.txt` — decryption key, never committed.
-
-`watcher-env.service` handles encryption automatically on save. To decrypt manually:
-```bash
-scripts/decrypt-env.sh
-```
+`grafana/system-dashboard.json` — system resources and security metrics dashboard. See `docs/dashboard.md` for how to read it.
 
 ---
 
 ## Fresh install
 
-See `guides/restore.md` for the full step-by-step.
+See `docs/restore.md` for the full step-by-step.
