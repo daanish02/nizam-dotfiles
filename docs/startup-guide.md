@@ -1,7 +1,7 @@
 # Machine Setup — nizam-vps
 
-Fresh Ubuntu 24.04 to a ready machine. Covers the base layer only — shell, security, monitoring.
-For Nizam services, continue with `~/.nizam-os/docs/README.md`.
+Fresh Ubuntu 24.04 to a ready machine. Covers the base layer only — shell, security, monitoring.  
+For Nizam services, continue with `nizam-os/docs/README.md`.
 
 ---
 
@@ -17,6 +17,7 @@ hostnamectl set-hostname nizam-vps
 ```
 
 ```bash
+# Add user and add to sudo list
 adduser vazir
 usermod -aG sudo vazir
 
@@ -29,7 +30,7 @@ chmod 600 /home/vazir/.ssh/authorized_keys
 # Generate new SSH key
 ssh-keygen -t ed25519 -C "<key-name>"
 ssh-copy-id vazir@<nizam-vps-ip>
-expiry-time="YYYYMMDD" ssh-ed25519 AAAA...  # Make key expire, edit server's `~/.ssh/authorized_keys`, belt-and-braces
+expiry-time="YYYYMMDD" ssh-ed25519 AAAA...  # make key expire, edit server's `~/.ssh/authorized_keys`, belt-and-braces
 ```
 
 Log out of root. Everything below runs as `vazir`.
@@ -66,7 +67,7 @@ sudo apt install -y ufw fail2ban unattended-upgrades
 
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
-sudo ufw allow 22/tcp  # Must enable before firewall; can close after Tailscale setup
+sudo ufw allow 22/tcp  # MUST enable before firewall; can close after Tailscale setup
 sudo ufw enable
 
 sudo systemctl enable --now fail2ban
@@ -132,14 +133,26 @@ sudo systemctl enable --now prometheus-node-exporter metrics-security.timer
 
 ---
 
-## 6. Lock down public SSH
+## 6. Tailscale
+
+```bash
+curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscale up
+
+tailscale status
+tailscale ip -4  # Note Tailscale IP
+```
+
+---
+
+## 7. Lock down public SSH
 
 **Do this after Tailscale is running (nizam-os Step 0) — not before.**  
 
 Before touching UFW, open a **second terminal** and confirm SSH over Tailscale works:
 
 ```bash
-ssh vazir@<tailscale-ip>   # must succeed before you continue
+ssh vazir@<tailscale-ip>   # MUST succeed before you continue
 ```
 
 Once confirmed, remove the public port:
@@ -153,7 +166,7 @@ sudo ufw status   # expected: no rule for port 22
 
 ---
 
-## 7. Verify
+## 8. Verify
 
 ```bash
 sudo sshd -T | grep -E 'permitrootlogin|passwordauthentication|pubkeyauthentication'
@@ -166,4 +179,4 @@ bash ~/.nizam-dotfiles/scripts/git-status.sh
 
 ## Next
 
-Machine is ready. Continue with `~/.nizam-os/docs/README.md`.
+Machine is ready. Continue with `nizam-os/docs/README.md`.
