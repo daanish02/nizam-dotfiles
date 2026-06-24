@@ -22,6 +22,46 @@
         "query": "prometheus",
         "refresh": 1,
         "type": "datasource"
+      },
+      {
+        "current": {},
+        "datasource": { "type": "prometheus", "uid": "${datasource}" },
+        "definition": "label_values(nizam_llm_requests_total, model)",
+        "hide": 0,
+        "includeAll": true,
+        "allValue": ".*",
+        "label": "Model",
+        "multi": true,
+        "name": "model",
+        "options": [],
+        "query": {
+          "query": "label_values(nizam_llm_requests_total, model)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": { "type": "prometheus", "uid": "${datasource}" },
+        "definition": "label_values(nizam_llm_requests_total, profile)",
+        "hide": 0,
+        "includeAll": true,
+        "allValue": ".*",
+        "label": "Agent",
+        "multi": true,
+        "name": "profile",
+        "options": [],
+        "query": {
+          "query": "label_values(nizam_llm_requests_total, profile)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
       }
     ]
   },
@@ -209,7 +249,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "targets": [
         {
-          "expr": "sum by (model) (rate(nizam_llm_spend_usd_total[10m]) * 3600)",
+          "expr": "sum by (model) (rate(nizam_llm_spend_usd_total{model=~\"$model\",profile=~\"$profile\"}[10m]) * 3600)",
           "legendFormat": "{{model}}",
           "refId": "A"
         }
@@ -237,9 +277,9 @@
       "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "targets": [
-        { "expr": "sum(rate(nizam_llm_input_tokens_total[5m]) * 60)", "legendFormat": "Input tok/min", "refId": "A" },
-        { "expr": "sum(rate(nizam_llm_output_tokens_total[5m]) * 60)", "legendFormat": "Output tok/min", "refId": "B" },
-        { "expr": "sum(rate(nizam_llm_cache_read_tokens_total[5m]) * 60)", "legendFormat": "Cache Read tok/min", "refId": "C" }
+        { "expr": "sum(rate(nizam_llm_input_tokens_total{model=~\"$model\",profile=~\"$profile\"}[5m]) * 60)", "legendFormat": "Input tok/min", "refId": "A" },
+        { "expr": "sum(rate(nizam_llm_output_tokens_total{model=~\"$model\",profile=~\"$profile\"}[5m]) * 60)", "legendFormat": "Output tok/min", "refId": "B" },
+        { "expr": "sum(rate(nizam_llm_cache_read_tokens_total{model=~\"$model\",profile=~\"$profile\"}[5m]) * 60)", "legendFormat": "Cache Read tok/min", "refId": "C" }
       ],
       "options": {
         "tooltip": { "mode": "multi", "sort": "desc" },
@@ -268,7 +308,7 @@
       "gridPos": { "x": 0, "y": 12, "w": 8, "h": 8 },
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "targets": [
-        { "expr": "sum by (model) (nizam_llm_spend_usd_total)", "legendFormat": "{{model}}", "refId": "A" }
+        { "expr": "sum by (model) (nizam_llm_spend_usd_total{model=~\"$model\",profile=~\"$profile\"})", "legendFormat": "{{model}}", "refId": "A" }
       ],
       "options": {
         "displayMode": "gradient",
@@ -297,7 +337,7 @@
       "gridPos": { "x": 8, "y": 12, "w": 8, "h": 8 },
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "targets": [
-        { "expr": "sum by (provider) (nizam_llm_spend_usd_total)", "legendFormat": "{{provider}}", "refId": "A" }
+        { "expr": "sum by (provider) (nizam_llm_spend_usd_total{model=~\"$model\",profile=~\"$profile\"})", "legendFormat": "{{provider}}", "refId": "A" }
       ],
       "options": {
         "pieType": "pie",
@@ -323,7 +363,7 @@
       "gridPos": { "x": 16, "y": 12, "w": 8, "h": 8 },
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "targets": [
-        { "expr": "sum by (profile) (nizam_llm_spend_usd_total)", "legendFormat": "{{profile}}", "refId": "A" }
+        { "expr": "sum by (profile) (nizam_llm_spend_usd_total{model=~\"$model\",profile=~\"$profile\"})", "legendFormat": "{{profile}}", "refId": "A" }
       ],
       "options": {
         "displayMode": "gradient",
@@ -348,12 +388,12 @@
     {
       "id": 12,
       "type": "timeseries",
-      "title": "Anthropic Cache Tokens — Creation vs Read",
+      "title": "Cache Tokens — Creation vs Read",
       "gridPos": { "x": 0, "y": 20, "w": 12, "h": 6 },
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "targets": [
-        { "expr": "sum(rate(nizam_llm_cache_creation_tokens_total[5m]) * 60)", "legendFormat": "Creation tok/min", "refId": "A" },
-        { "expr": "sum(rate(nizam_llm_cache_read_tokens_total[5m]) * 60)", "legendFormat": "Read tok/min", "refId": "B" }
+        { "expr": "sum(rate(nizam_llm_cache_creation_tokens_total{model=~\"$model\",profile=~\"$profile\"}[5m]) * 60)", "legendFormat": "Creation tok/min", "refId": "A" },
+        { "expr": "sum(rate(nizam_llm_cache_read_tokens_total{model=~\"$model\",profile=~\"$profile\"}[5m]) * 60)", "legendFormat": "Read tok/min", "refId": "B" }
       ],
       "options": {
         "tooltip": { "mode": "multi", "sort": "desc" },
@@ -381,7 +421,7 @@
       "gridPos": { "x": 12, "y": 20, "w": 12, "h": 6 },
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "targets": [
-        { "expr": "nizam_llm_avg_latency_ms_1h", "legendFormat": "{{model}}", "refId": "A" }
+        { "expr": "nizam_llm_avg_latency_ms_1h{model=~\"$model\"}", "legendFormat": "{{model}}", "refId": "A" }
       ],
       "options": {
         "tooltip": { "mode": "multi", "sort": "desc" },
