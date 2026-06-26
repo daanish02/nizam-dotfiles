@@ -19,13 +19,15 @@ This is one of three repos:
 ## Repo layout
 
 ```bash
-nizam-dotfile/
+nizam-dotfiles/
 ├── shell/      .zshrc, .p10k.zsh, aliases-zsh
 ├── systemd/    metrics-security.service + .timer — symlinked to /etc/systemd/system/
-├── scripts/    metrics-security.sh, git-status.sh
+├── scripts/    metrics-security.sh, git-status.sh, _log.sh, install.sh
+├── config/     logrotate.dotfiles — copied (not symlinked) to /etc/logrotate.d/dotfiles
+├── logs/       scripts.log (gitignored) — user-space script output
 ├── grafana/    system-dashboard.json — machine + security metrics
-├── docs/       startup guide, dashboard guide
-└──.gitconfig   git identity and settings
+├── docs/       startup guide, dashboard guide, debugging reference
+└── .gitconfig  git identity and settings
 ```
 
 ## Symlinks
@@ -48,4 +50,4 @@ Test: *Would this file belong on a server where I'm not running Nizam-OS?* Yes �
 
 ## Setup
 
-See [`docs/startup.md`](docs/startup.md).
+See [`docs/startup-guide.md`](docs/startup-guide.md) · Debugging: [`docs/debugging.md`](docs/debugging.md)

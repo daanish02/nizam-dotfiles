@@ -124,12 +124,11 @@ cd ~/.nizam-dotfiles && git push   # confirm it works
 Collects SSH failures, fail2ban bans, and UFW block counts into a Prometheus-compatible textfile for node-exporter.
 
 ```bash
-sudo ln -sf ~/.nizam-dotfiles/systemd/metrics-security.service /etc/systemd/system/metrics-security.service
-sudo ln -sf ~/.nizam-dotfiles/systemd/metrics-security.timer /etc/systemd/system/metrics-security.timer
-
-sudo systemctl daemon-reload
+sudo bash ~/.nizam-dotfiles/scripts/install.sh
 sudo systemctl enable --now prometheus-node-exporter metrics-security.timer
 ```
+
+`install.sh` symlinks systemd units and copies `config/logrotate.dotfiles` to `/etc/logrotate.d/dotfiles` (copy not symlink — logrotate requires root ownership). Re-run after editing `config/logrotate.dotfiles` to push changes.
 
 ---
 

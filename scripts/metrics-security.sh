@@ -50,3 +50,4 @@ EOF
 
 mv "$TMP" "$OUT"
 chmod 644 "$OUT"
+echo "metrics-security: wrote security.prom (ssh_failed=$ssh_failed, ssh_invalid=$ssh_invalid, f2b_bans=$f2b_total, f2b_current=$f2b_current, ufw_blocked=$ufw_blocked)"
