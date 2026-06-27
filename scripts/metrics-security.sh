@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Collect security metrics and write to node-exporter textfile.
+# Counts SSH failures, fail2ban bans, and UFW blocks from system logs.
+# Runs every minute via metrics-security.timer → scraped by Prometheus.
 set -euo pipefail
 
 OUT="/var/lib/prometheus/node-exporter/security.prom"

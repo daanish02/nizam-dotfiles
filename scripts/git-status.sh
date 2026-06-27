@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Show git status across all three nizam repos (dotfiles, os, vault).
+# Prints branch, dirty file count, ahead/behind remote, and last commit.
 
 GREEN='\033[0;32m'
 RED='\033[0;31m'
