@@ -23,6 +23,7 @@ alias du='du -h'
 alias py='python3'
 alias activate='source .venv/bin/activate'
 alias nv='nvim'
+alias json='python3 -m json.tool'
 
 alias urlencode='python3 -c "import sys, urllib.parse as p; print(p.quote(sys.stdin.read().strip()))"'
 alias urldecode='python3 -c "import sys, urllib.parse as p; print(p.unquote(sys.stdin.read().strip()))"'
@@ -54,3 +55,10 @@ alias mem='ps aux --sort=-%mem | head -11'
 alias cpu='ps aux --sort=-%cpu | head -11'
 
 alias cal='ncal -C'
+
+# Secrets Management
+alias pw='openssl rand -base64 16'
+alias pw24='openssl rand -base64 24'
+alias pwh='openssl rand -hex 16'
+alias pwa="tr -dc 'A-Za-z0-9' </dev/urandom | head -c 20; echo"
+alias pwu="openssl rand -base64 24 | tr -d '=+/' | cut -c1-24"
