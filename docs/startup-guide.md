@@ -30,7 +30,9 @@ chmod 600 /home/vazir/.ssh/authorized_keys
 # Generate new SSH key
 ssh-keygen -t ed25519 -C "<key-name>"
 ssh-copy-id vazir@<nizam-vps-ip>
-expiry-time="YYYYMMDD" ssh-ed25519 AAAA...  # make key expire, edit server's `~/.ssh/authorized_keys`, belt-and-braces
+
+# Let key expire, edit server's `~/.ssh/authorized_keys`, belt-and-braces
+# expiry-time="YYYYMMDD" ssh-ed25519 AAAA...  
 ```
 
 Log out of root. Everything below runs as `vazir`.
@@ -51,7 +53,7 @@ PubkeyAuthentication yes
 ```
 
 ```bash
-sudo sshd -t && sudo systemctl restart ssh
+sudo sshd -t && sudo systemctl restart ssh  # test ssh config and restart
 
 # All three must show the expected values
 sudo sshd -T | grep -E 'permitrootlogin|passwordauthentication|pubkeyauthentication'
@@ -110,7 +112,7 @@ Open a new shell — zinit bootstraps itself on first launch.
 ```bash
 # GitHub SSH key for push access
 ssh-keygen -t ed25519 -C "your@email.com"
-eval "$(ssh-agent -s)"
+eval "$(ssh-agent -s)"  # authc and capture
 ssh-add ~/.ssh/id_ed25519
 cat ~/.ssh/id_ed25519.pub   # add to GitHub → Settings → SSH Keys
 
