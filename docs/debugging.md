@@ -6,7 +6,7 @@ Quick reference for the machine baseline layer (shell, security, monitoring).
 
 ## Security Metrics (metrics-security)
 
-Runs every 5 min as root. Writes `/var/lib/prometheus/node-exporter/security.prom`.
+Runs every min as root. Writes `/var/lib/prometheus/node-exporter/security.prom`.
 
 ```bash
 sudo systemctl status metrics-security.timer --no-pager
