@@ -1,36 +1,31 @@
 # nizam-dotfiles
 
-Machine config for nizam-vps — shell, git identity, security monitoring. Nothing more.
+The machine layer for nizam-vps. It configures the shell, secures remote access, and pipes system health data into a Grafana dashboard — before any application runs.
 
-This is one of three repos:
+## What it does
 
-| Repo | Purpose |
-|---|---|
-| `nizam-dotfiles` | The machine — shell, git, security monitoring (this repo) |
-| `nizam-os` | The software — agents, services, configs, databases |
-| `nizam-vault` | Obsidian notes |
-
-## What it covers
-
-- **Shell** — zsh, Powerlevel10k, aliases, key bindings
-- **Git** — `.gitconfig` identity and preferences
-- **Security monitoring** — `metrics-security` collects SSH failures, fail2ban bans, UFW block counts → node-exporter textfile → Grafana
+- Sets up zsh with a consistent shell environment, prompt, and aliases
+- Hardens SSH, configures a firewall, and enables automatic security updates from first boot
+- Collects CPU, memory, disk, and security metrics on short intervals and feeds them to Prometheus
+- Visualises everything in a live Grafana dashboard
+- Rotates logs and keeps the baseline clean
 
 ## Repo layout
 
 ```bash
 nizam-dotfiles/
-├── shell/      .zshrc, .p10k.zsh, aliases-zsh
-├── systemd/    metrics-security.service + .timer — symlinked to /etc/systemd/system/
-├── scripts/    metrics-security.sh, git-status.sh, _log.sh, install.sh
-├── config/     logrotate.dotfiles — copied (not symlinked) to /etc/logrotate.d/dotfiles
-├── logs/       scripts.log (gitignored) — user-space script output
-├── grafana/    system-dashboard.json — machine + security metrics
-├── docs/       startup guide, dashboard guide, debugging reference
-└── .gitconfig  git identity and settings
+├── shell/      zsh config, prompt theme, aliases
+├── scripts/    metric collectors, shared logger, install script
+├── systemd/    service and timer units for each metric collector
+├── config/     logrotate config
+├── grafana/    system dashboard JSON
+├── docs/       setup, dashboard, alerts, and debugging guides
+└── logs/       runtime script output (gitignored)
 ```
 
 ## Symlinks
+
+`scripts/install.sh` wires everything into place. Re-run after pulling changes.
 
 | Source | Target |
 |---|---|
@@ -39,15 +34,28 @@ nizam-dotfiles/
 | `.gitconfig` | `~/.gitconfig` |
 | `systemd/metrics-security.service` | `/etc/systemd/system/` |
 | `systemd/metrics-security.timer` | `/etc/systemd/system/` |
+| `systemd/metrics-processes.service` | `/etc/systemd/system/` |
+| `systemd/metrics-processes.timer` | `/etc/systemd/system/` |
+| `systemd/metrics-disk.service` | `/etc/systemd/system/` |
+| `systemd/metrics-disk.timer` | `/etc/systemd/system/` |
+
+`config/logrotate.dotfiles` is copied (not symlinked) to `/etc/logrotate.d/dotfiles` — logrotate rejects config files not owned by root.
 
 ## Boundary
 
-**What belongs here:** Config that would exist on this server even without Nizam-OS — shell, git identity, security monitoring.
-
-**What belongs in nizam-os:** Everything needed to run Nizam — agents, services, databases, secrets.
-
-Test: *Would this file belong on a server where I'm not running Nizam-OS?* Yes → here. No → `nizam-os`.
+Would this file belong on this server even without Nizam-OS running? Yes → here. No → nizam-os.
 
 ## Setup
 
-Startup: [`docs/startup-guide.md`](docs/startup-guide.md) · Dashboard: [`docs/dashboard.md`](docs/dashboard.md) · Alerts: [`docs/alerts.md`](docs/alerts.md) · Debugging: [`docs/debugging.md`](docs/debugging.md)
+See [`docs/startup-guide.md`](docs/startup-guide.md) to go from a fresh VPS to a ready machine.
+Dashboard: [`docs/dashboard.md`](docs/dashboard.md) · Alerts: [`docs/alerts.md`](docs/alerts.md) · Debugging: [`docs/debugging.md`](docs/debugging.md)
+
+---
+
+## How it fits
+
+| Repo | Handles |
+|---|---|
+| nizam-dotfiles | The machine — shell, security, monitoring (this repo) |
+| nizam-os | The software — agents, services, databases |
+| nizam-vault | The knowledge — notes, references, decisions |

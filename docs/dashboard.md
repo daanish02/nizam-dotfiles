@@ -2,16 +2,23 @@
 
 ## Pipeline
 
-```
-metrics-security.sh   (every 1 min)  → security.prom
-metrics-processes.sh  (every 30 sec) → processes.prom
-metrics-disk.sh       (every 5 min)  → disk-dirs.prom
-  → node-exporter :9100 (textfile collector)
-     → Prometheus :9090
-        → Grafana
+```mermaid
+graph LR
+    A[metrics-security.sh] --> P[textfile collector]
+    B[metrics-processes.sh] --> P
+    C[metrics-disk.sh] --> P
+    P --> N[node-exporter :9100]
+    N --> PR[Prometheus :9090]
+    PR --> G[Grafana]
 ```
 
-All three scripts write Prometheus-format textfiles. node-exporter scrapes the directory; Prometheus scrapes node-exporter. `du` in metrics-disk runs every 5 min, not 30 sec — it's slow on large trees.
+| Script | Writes | Interval | Why |
+|---|---|---|---|
+| `metrics-security.sh` | `security.prom` | 1 min | Security events change slowly |
+| `metrics-processes.sh` | `processes.prom` | 30 sec | CPU/memory change fast |
+| `metrics-disk.sh` | `disk-dirs.prom` | 5 min | `du` walks entire trees — slow and I/O heavy |
+
+All three write Prometheus-format textfiles to `/var/lib/prometheus/node-exporter/`. node-exporter scrapes that directory; Prometheus scrapes node-exporter.
 
 ## Import
 
@@ -58,8 +65,8 @@ Mirrored layout: positive = in/read, negative = out/write.
 
 Two bar gauges showing top 5 consumers, updated every 30 seconds.
 
-- **Top CPU** — `%CPU` per process from `ps aux`. Bars are proportional to 100% CPU. Process name includes PID (`grafana[892]`) so multiple instances of the same binary show separately.
-- **Top Memory** — RSS per process, bars proportional to total server RAM (8 GB). More useful than `%MEM` — shows actual memory held. `litellm/python` and `hermes-agent/python` are shown with their parent directory to distinguish multiple Python processes.
+- **Top CPU** — `%CPU` per process from `ps aux`, LCD bar style with continuous green→yellow→red scale. Bars are proportional to 100% CPU. Process name includes PID (`grafana[892]`) so multiple instances of the same binary show separately.
+- **Top Memory** — RSS per process stacked in one bar, proportional to total server RAM (8 GB). Same pattern as disk — each process is a colored segment, hover to see exact sizes. `litellm/python` and `hermes-agent/python` are shown with their parent directory to distinguish multiple Python processes.
 
 Both panels use instant queries — avoids range query returning >5 series when different processes enter the top 5 at different timestamps. `du`, `ps`, `awk`, `grep`, `sh`, and `bash` are excluded from process collection — they appear briefly at 100% CPU during collection and are not useful signal.
 

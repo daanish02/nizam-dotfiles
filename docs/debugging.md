@@ -4,9 +4,9 @@ Quick reference for the machine baseline layer (shell, security, monitoring).
 
 ---
 
-## Security Metrics (metrics-security)
+## Security metrics
 
-Runs every min as root. Writes `/var/lib/prometheus/node-exporter/security.prom`.
+Runs every minute as root. Writes `/var/lib/prometheus/node-exporter/security.prom`.
 
 ```bash
 sudo systemctl status metrics-security.timer --no-pager
@@ -29,9 +29,61 @@ curl -s http://localhost:9100/metrics | grep nizam_ssh
 
 ---
 
-## Script Logs
+## Process metrics
 
-User-space dotfiles scripts (if any) write to:
+Runs every 30 seconds as root. Writes `/var/lib/prometheus/node-exporter/processes.prom`.
+
+```bash
+sudo systemctl status metrics-processes.timer --no-pager
+sudo journalctl -u metrics-processes.service -n 10 --no-pager
+```
+
+Healthy journal line:
+```
+metrics-processes: wrote processes.prom
+```
+
+```bash
+# Trigger manually and verify output
+sudo systemctl start metrics-processes.service \
+  && cat /var/lib/prometheus/node-exporter/processes.prom
+
+# Confirm Prometheus is scraping it
+curl -s http://localhost:9100/metrics | grep nizam_process
+```
+
+> If `du` or `ps` appear at 100% CPU in the Grafana panel, the EXCLUDE pattern in `scripts/metrics-processes.sh` is not filtering them. Check that both are present: `/\/(ps|awk|grep|sh|bash|du)$|^(ps|awk|grep|du)$`.
+
+---
+
+## Disk metrics
+
+Runs every 5 minutes as root. Writes `/var/lib/prometheus/node-exporter/disk-dirs.prom`.
+
+```bash
+sudo systemctl status metrics-disk.timer --no-pager
+sudo journalctl -u metrics-disk.service -n 10 --no-pager
+```
+
+Healthy journal line:
+```
+metrics-disk: wrote disk-dirs.prom
+```
+
+```bash
+# Trigger manually and verify output
+sudo systemctl start metrics-disk.service \
+  && cat /var/lib/prometheus/node-exporter/disk-dirs.prom
+
+# Confirm Prometheus is scraping it
+curl -s http://localhost:9100/metrics | grep nizam_dir
+```
+
+---
+
+## Script logs
+
+All metric scripts write to:
 ```
 ~/.nizam-dotfiles/logs/scripts.log
 ```
@@ -45,36 +97,41 @@ grep ERROR ~/.nizam-dotfiles/logs/scripts.log
 
 Rotated daily, 14 days kept. Config: `config/logrotate.dotfiles` (copied to `/etc/logrotate.d/dotfiles` by `scripts/install.sh`).
 
-> `metrics-security.sh` runs as root — its output goes to the systemd journal, not `scripts.log`. Only user-space scripts that source `scripts/_log.sh` write to the log file.
+---
+
+## Node exporter
+
+```bash
+sudo systemctl status prometheus-node-exporter --no-pager
+curl -s http://localhost:9100/metrics | grep nizam_
+```
 
 ---
 
 ## Symlinks
 
 ```bash
-ls -la /etc/systemd/system/metrics-security.service \
-       /etc/systemd/system/metrics-security.timer
-# both should show -> /home/vazir/.nizam-dotfiles/systemd/...
+ls -la \
+  /etc/systemd/system/metrics-security.service \
+  /etc/systemd/system/metrics-security.timer \
+  /etc/systemd/system/metrics-processes.service \
+  /etc/systemd/system/metrics-processes.timer \
+  /etc/systemd/system/metrics-disk.service \
+  /etc/systemd/system/metrics-disk.timer
+# all should show -> /home/vazir/.nizam-dotfiles/systemd/...
 ```
 
-Re-run `sudo bash scripts/install.sh` if symlinks are missing or stale.
+Re-run `sudo bash scripts/install.sh` if any symlinks are missing or stale.
 
 ---
 
-## Node Exporter
-
-```bash
-sudo systemctl status prometheus-node-exporter --no-pager
-curl -s http://localhost:9100/metrics | grep nizam_   # all nizam security metrics
-```
-
----
-
-## Common Fixes
+## Common fixes
 
 | Symptom | Fix |
 |---|---|
-| `security.prom` not updating | `sudo systemctl start metrics-security.service && sudo journalctl -u metrics-security.service -n 5 --no-pager` |
+| `.prom` file not updating | `sudo systemctl start metrics-<name>.service && sudo journalctl -u metrics-<name>.service -n 5 --no-pager` |
+| Grafana panel shows >5 processes | Stale Prometheus series — wait 5 min for lookback window to expire |
+| `du` or `ps` at 100% in CPU panel | Check EXCLUDE pattern in `metrics-processes.sh` includes `du`, `ps`, `awk`, `grep`, `sh`, `bash` |
 | Symlinks missing after git pull | `sudo bash scripts/install.sh` |
 | logrotate errors on dotfiles config | `sudo logrotate -d /etc/logrotate.d/dotfiles` — check owner is root (`ls -la /etc/logrotate.d/dotfiles`) |
-| Prometheus not showing security metrics | Check node-exporter is scraping textfile dir: `curl -s http://localhost:9100/metrics \| grep nizam_ssh` |
+| Prometheus not showing nizam metrics | Check node-exporter scrapes textfile dir: `curl -s http://localhost:9100/metrics \| grep nizam_` |

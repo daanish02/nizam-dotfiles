@@ -2,7 +2,7 @@
 
 Unified alerting via Grafana → Discord. Two severity levels, two contact points.
 
-## Contact Points
+## Contact points
 
 | Name | Channel | Trigger |
 |---|---|---|
@@ -20,7 +20,7 @@ Webhooks are stored in Grafana's database. To update: Grafana → Alerting → C
 
 Critical fires fast and repeats often. Warning batches and stays quiet once acknowledged.
 
-## Alert Rules
+## Alert rules
 
 All rules live in folder `nizam-alerts`, group `nizam-system`.
 
@@ -34,7 +34,28 @@ All rules live in folder `nizam-alerts`, group `nizam-system`.
 
 Each threshold has a separate rule with a `severity` label — routing picks the right channel automatically.
 
-## Managing Alerts
+## Message format
+
+Discord messages use a shared template on both contact points:
+
+```
+**{alertname}**
+**{SEVERITY}** — {summary}
+{description with current value}
+```
+
+Example:
+```
+**CPU High - Warning**
+**WARNING** — CPU above 70%
+CPU at 78.3%
+```
+
+When an alert resolves, Grafana sends a follow-up message with `[RESOLVED]` prepended to the alertname.
+
+---
+
+## Managing alerts
 
 **View rules:** Grafana → Alerting → Alert rules → folder `nizam-alerts`
 
@@ -44,7 +65,7 @@ Each threshold has a separate rule with a `severity` label — routing picks the
 
 **Change a threshold:** Grafana → Alert rules → edit rule → adjust evaluator value → Save. Or re-run the provisioning script with updated values.
 
-## Adding New Rules
+## Adding new rules
 
 Use the Grafana API — same pattern as the existing rules. Label `severity=warning` or `severity=critical` is all the routing needs.
 
