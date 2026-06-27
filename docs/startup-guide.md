@@ -121,20 +121,53 @@ cd ~/.nizam-dotfiles && git push   # confirm it works
 
 ---
 
-## 5. Security monitoring
+## 5. Monitoring stack
+
+Prometheus scrapes node-exporter, Grafana visualises it. Both are needed for the security dashboard.
+
+```bash
+# Prometheus
+sudo apt install -y prometheus
+
+# Grafana
+sudo mkdir -p /etc/apt/keyrings
+wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | \
+  sudo tee /etc/apt/sources.list.d/grafana.list
+sudo apt update && sudo apt install -y grafana
+
+sudo systemctl enable --now prometheus grafana-server
+```
+
+---
+
+## 6. Security monitoring
 
 Collects SSH failures, fail2ban bans, and UFW block counts into a Prometheus-compatible textfile for node-exporter.
 
 ```bash
 sudo bash ~/.nizam-dotfiles/scripts/install.sh
-sudo systemctl enable --now prometheus-node-exporter metrics-security.timer
+sudo systemctl enable --now prometheus-node-exporter metrics-security.timer metrics-processes.timer metrics-disk.timer
 ```
+
+**Grafana memory tuning** — without this, Grafana holds 800 MB+ of heap:
+
+```bash
+sudo tee -a /etc/default/grafana-server << 'EOF'
+
+GOGC=20
+GOMEMLIMIT=350MiB
+EOF
+sudo systemctl restart grafana-server
+```
+
+Import the system dashboard and set up alerts — see [`docs/dashboard.md`](dashboard.md) and [`docs/alerts.md`](alerts.md).
 
 `install.sh` symlinks systemd units and copies `config/logrotate.dotfiles` to `/etc/logrotate.d/dotfiles` (copy not symlink — logrotate requires root ownership). Re-run after editing `config/logrotate.dotfiles` to push changes.
 
 ---
 
-## 6. Tailscale
+## 7. Tailscale
 
 ```bash
 curl -fsSL https://tailscale.com/install.sh | sh
@@ -146,7 +179,7 @@ tailscale ip -4  # note Tailscale IP
 
 ---
 
-## 7. Lock down public SSH
+## 8. Lock down public SSH
 
 **Do this after Tailscale is running — not before.**  
 
@@ -167,7 +200,7 @@ sudo ufw status   # expected: no rule for port 22
 
 ---
 
-## 8. Verify
+## 9. Verify
 
 ```bash
 sudo sshd -T | grep -E 'permitrootlogin|passwordauthentication|pubkeyauthentication'

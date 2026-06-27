@@ -50,4 +50,4 @@ Test: *Would this file belong on a server where I'm not running Nizam-OS?* Yes �
 
 ## Setup
 
-See [`docs/startup-guide.md`](docs/startup-guide.md) · Debugging: [`docs/debugging.md`](docs/debugging.md)
+Startup: [`docs/startup-guide.md`](docs/startup-guide.md) · Dashboard: [`docs/dashboard.md`](docs/dashboard.md) · Alerts: [`docs/alerts.md`](docs/alerts.md) · Debugging: [`docs/debugging.md`](docs/debugging.md)
