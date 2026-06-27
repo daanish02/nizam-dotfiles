@@ -7,8 +7,12 @@ set -euo pipefail
 DOTFILES=/home/vazir/.nizam-dotfiles
 
 # Systemd system units
-ln -sf "$DOTFILES/systemd/metrics-security.service" /etc/systemd/system/metrics-security.service
-ln -sf "$DOTFILES/systemd/metrics-security.timer"   /etc/systemd/system/metrics-security.timer
+ln -sf "$DOTFILES/systemd/metrics-security.service"  /etc/systemd/system/metrics-security.service
+ln -sf "$DOTFILES/systemd/metrics-security.timer"    /etc/systemd/system/metrics-security.timer
+ln -sf "$DOTFILES/systemd/metrics-processes.service" /etc/systemd/system/metrics-processes.service
+ln -sf "$DOTFILES/systemd/metrics-processes.timer"   /etc/systemd/system/metrics-processes.timer
+ln -sf "$DOTFILES/systemd/metrics-disk.service"      /etc/systemd/system/metrics-disk.service
+ln -sf "$DOTFILES/systemd/metrics-disk.timer"        /etc/systemd/system/metrics-disk.timer
 
 systemctl daemon-reload
 echo "  reloaded system daemon"
@@ -25,7 +29,11 @@ echo "  installed logrotate config"
 echo ""
 echo "Systemd symlinks:"
 ls -la /etc/systemd/system/metrics-security.service \
-       /etc/systemd/system/metrics-security.timer
+       /etc/systemd/system/metrics-security.timer \
+       /etc/systemd/system/metrics-processes.service \
+       /etc/systemd/system/metrics-processes.timer \
+       /etc/systemd/system/metrics-disk.service \
+       /etc/systemd/system/metrics-disk.timer
 
 echo ""
-echo "Next: sudo systemctl enable --now prometheus-node-exporter metrics-security.timer"
+echo "Next: sudo systemctl enable --now prometheus-node-exporter metrics-security.timer metrics-processes.timer metrics-disk.timer"
