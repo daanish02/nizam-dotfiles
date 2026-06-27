@@ -4,3 +4,4 @@ Description=Collect security metrics for Prometheus node-exporter
 [Service]
 Type=oneshot
 ExecStart=/home/vazir/.nizam-dotfiles/scripts/metrics-security.sh
+User=root

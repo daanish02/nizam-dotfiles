@@ -4,6 +4,10 @@
 # Runs every minute via metrics-security.timer → scraped by Prometheus.
 set -euo pipefail
 
+SCRIPT_NAME="metrics-security"
+# shellcheck source=_log.sh
+source "$(dirname "$0")/_log.sh"
+
 OUT="/var/lib/prometheus/node-exporter/security.prom"
 TMP=$(mktemp)
 
@@ -53,4 +57,4 @@ EOF
 
 mv "$TMP" "$OUT"
 chmod 644 "$OUT"
-echo "metrics-security: wrote security.prom (ssh_failed=$ssh_failed, ssh_invalid=$ssh_invalid, f2b_bans=$f2b_total, f2b_current=$f2b_current, ufw_blocked=$ufw_blocked)"
+log_info "wrote security.prom (ssh_failed=$ssh_failed, ssh_invalid=$ssh_invalid, f2b_bans=$f2b_total, f2b_current=$f2b_current, ufw_blocked=$ufw_blocked)"
