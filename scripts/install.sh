@@ -6,14 +6,14 @@ set -euo pipefail
 
 DOTFILES=/home/vazir/.nizam-dotfiles
 
-# ── Systemd system units ──────────────────────────────────────────────────────
+# Systemd system units
 ln -sf "$DOTFILES/systemd/metrics-security.service" /etc/systemd/system/metrics-security.service
 ln -sf "$DOTFILES/systemd/metrics-security.timer"   /etc/systemd/system/metrics-security.timer
 
 systemctl daemon-reload
 echo "  reloaded system daemon"
 
-# ── Logrotate ─────────────────────────────────────────────────────────────────
+# Logrotate
 # logrotate rejects config files not owned by root — symlinks to user-owned files are refused.
 # Copied (not symlinked) for the same reason as nizam-os/config/logrotate.nizam.
 # After editing config/logrotate.dotfiles, re-run this script to push the change.
