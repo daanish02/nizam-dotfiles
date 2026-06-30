@@ -97,11 +97,12 @@ sudo apt install -y \
 git clone <repo-url> ~/.nizam-dotfiles
 
 # Shell
-ln -sf ~/.nizam-dotfiles/shell/.zshrc ~/.zshrc
-ln -sf ~/.nizam-dotfiles/shell/.p10k.zsh ~/.p10k.zsh
+ln -sf ~/nizam-dotfiles/shell/.zshrc ~/.zshrc
+ln -sf ~/nizam-dotfiles/shell/.p10k.zsh ~/.p10k.zsh
+ln -sf ~/nizam-dotfiles/shell/.zsh-aliases ~/.zsh-aliases
 
 # Git identity
-ln -sf ~/.nizam-dotfiles/.gitconfig ~/.gitconfig
+ln -sf ~/nizam-dotfiles/config/.gitconfig ~/.gitconfig
 
 # Switch default shell
 chsh -s $(which zsh)
