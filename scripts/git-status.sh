@@ -11,9 +11,9 @@ DIM='\033[2m'
 RESET='\033[0m'
 
 REPOS=(
-    "$HOME/.nizam-dotfiles|dotfiles"
-    "$HOME/.nizam-vault|vault"
-    "$HOME/.nizam-os|os"
+    "$HOME/nizam-dotfiles|dotfiles"
+    "$HOME/nizam-vault|vault"
+    "$HOME/nizam-os|os"
 )
 
 echo

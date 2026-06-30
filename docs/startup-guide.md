@@ -94,7 +94,7 @@ sudo apt install -y \
 ## 4. Dotfiles
 
 ```bash
-git clone <repo-url> ~/.nizam-dotfiles
+git clone <repo-url> ~/nizam-dotfiles
 
 # Shell
 ln -sf ~/nizam-dotfiles/shell/.zshrc ~/.zshrc
@@ -117,7 +117,7 @@ eval "$(ssh-agent -s)"  # authc and capture
 ssh-add ~/.ssh/id_ed25519
 cat ~/.ssh/id_ed25519.pub   # add to GitHub → Settings → SSH Keys
 
-cd ~/.nizam-dotfiles && git push   # confirm it works
+cd ~/nizam-dotfiles && git push   # confirm it works
 ```
 
 ---
@@ -147,7 +147,7 @@ sudo systemctl enable --now prometheus grafana-server
 Collects SSH failures, fail2ban bans, and UFW block counts into a Prometheus-compatible textfile for node-exporter.
 
 ```bash
-sudo bash ~/.nizam-dotfiles/scripts/install.sh
+sudo bash ~/nizam-dotfiles/scripts/install.sh
 sudo systemctl enable --now prometheus-node-exporter metrics-security.timer metrics-processes.timer metrics-disk.timer
 ```
 
@@ -207,7 +207,7 @@ sudo ufw status   # expected: no rule for port 22
 sudo sshd -T | grep -E 'permitrootlogin|passwordauthentication|pubkeyauthentication'
 sudo ufw status
 sudo systemctl is-active fail2ban prometheus-node-exporter metrics-security.timer
-bash ~/.nizam-dotfiles/scripts/git-status.sh
+bash ~/nizam-dotfiles/scripts/git-status.sh
 ```
 
 ---

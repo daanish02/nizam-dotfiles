@@ -1,4 +1,4 @@
-/home/vazir/.nizam-dotfiles/logs/*.log {
+/home/vazir/nizam-dotfiles/logs/*.log {
     su vazir vazir
     daily
     rotate 14

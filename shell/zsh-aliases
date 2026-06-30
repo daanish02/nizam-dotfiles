@@ -39,7 +39,7 @@ alias gd='git diff'
 alias gb='git branch -a'
 alias gl='git log --oneline --graph --decorate -20'
 
-alias gsall='~/.nizam-dotfiles/scripts/git-status.sh'
+alias gsall='~/nizam-dotfiles/scripts/git-status.sh'
 
 # System & Networking
 alias update='sudo apt update && sudo apt upgrade'

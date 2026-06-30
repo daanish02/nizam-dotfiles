@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Shared logger for user-space dotfiles scripts.
 # Source this file, then call log_info / log_warn / log_error.
-# Output goes to stdout AND ~/.nizam-dotfiles/logs/scripts.log.
+# Output goes to stdout AND ~/nizam-dotfiles/logs/scripts.log.
 # Override log path: DOTFILES_LOG=/path/to/other.log source _log.sh
 
-DOTFILES_LOG="${DOTFILES_LOG:-$HOME/.nizam-dotfiles/logs/scripts.log}"
+DOTFILES_LOG="${DOTFILES_LOG:-$HOME/nizam-dotfiles/logs/scripts.log}"
 mkdir -p "$(dirname "$DOTFILES_LOG")"
 
 _dotfiles_log() {

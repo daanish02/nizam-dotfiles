@@ -3,5 +3,5 @@ Description=Collect directory disk usage metrics
 
 [Service]
 Type=oneshot
-ExecStart=/home/vazir/.nizam-dotfiles/scripts/metrics-disk.sh
+ExecStart=/home/vazir/nizam-dotfiles/scripts/metrics-disk.sh
 User=root

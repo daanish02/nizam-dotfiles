@@ -28,7 +28,7 @@ Grafana and Prometheus are installed in nizam-os Step 0. Once running:
 - URL: `http://localhost:9090`
 
 **2. Import dashboard** — Grafana → Dashboards → Import → Upload JSON file
-- File: `~/.nizam-dotfiles/grafana/system-dashboard.json`
+- File: `~/nizam-dotfiles/grafana/system-dashboard.json`
 - Select the Prometheus datasource when prompted
 
 ---

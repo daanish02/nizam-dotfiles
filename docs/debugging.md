@@ -85,14 +85,14 @@ curl -s http://localhost:9100/metrics | grep nizam_dir
 
 All metric scripts write to:
 ```
-~/.nizam-dotfiles/logs/scripts.log
+~/nizam-dotfiles/logs/scripts.log
 ```
 
 Format: `TIMESTAMP [LEVEL] [script-name] message`
 
 ```bash
-tail -f ~/.nizam-dotfiles/logs/scripts.log
-grep ERROR ~/.nizam-dotfiles/logs/scripts.log
+tail -f ~/nizam-dotfiles/logs/scripts.log
+grep ERROR ~/nizam-dotfiles/logs/scripts.log
 ```
 
 Rotated daily, 14 days kept. Config: `config/logrotate.dotfiles` (copied to `/etc/logrotate.d/dotfiles` by `scripts/install.sh`).
@@ -118,7 +118,7 @@ ls -la \
   /etc/systemd/system/metrics-processes.timer \
   /etc/systemd/system/metrics-disk.service \
   /etc/systemd/system/metrics-disk.timer
-# all should show -> /home/vazir/.nizam-dotfiles/systemd/...
+# all should show -> /home/vazir/nizam-dotfiles/systemd/...
 ```
 
 Re-run `sudo bash scripts/install.sh` if any symlinks are missing or stale.
