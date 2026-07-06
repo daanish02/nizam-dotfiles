@@ -2,7 +2,8 @@
 Description=Run security metrics collector every minute
 
 [Timer]
-OnCalendar=*:0/1
+OnCalendar=*:*:00
+AccuracySec=1s
 Persistent=true
 
 [Install]

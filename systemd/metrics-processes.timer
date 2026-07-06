@@ -2,8 +2,7 @@
 Description=Run metrics-processes every 30 seconds
 
 [Timer]
-OnBootSec=30s
-OnUnitActiveSec=30s
+OnCalendar=*:*:10,40
 AccuracySec=1s
 
 [Install]
