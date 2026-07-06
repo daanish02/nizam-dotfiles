@@ -57,4 +57,8 @@ EOF
 
 mv "$TMP" "$OUT"
 chmod 644 "$OUT"
-log_info "wrote security.prom (ssh_failed=$ssh_failed, ssh_invalid=$ssh_invalid, f2b_bans=$f2b_total, f2b_current=$f2b_current, ufw_blocked=$ufw_blocked)"
+if [[ $f2b_current -gt 0 ]]; then
+    log_warn "wrote security.prom (ssh_failed=$ssh_failed, ssh_invalid=$ssh_invalid, f2b_bans=$f2b_total, f2b_current=$f2b_current, ufw_blocked=$ufw_blocked) — ${f2b_current} IP(s) currently banned"
+else
+    log_info "wrote security.prom (ssh_failed=$ssh_failed, ssh_invalid=$ssh_invalid, f2b_bans=$f2b_total, f2b_current=$f2b_current, ufw_blocked=$ufw_blocked)"
+fi

@@ -22,7 +22,12 @@ du -sb /var/log /var/lib /var/cache /home /root /opt /tmp /usr 2>/dev/null | \
     }'
 } > "$TMP"
 
+dir_count=$(grep -c '^nizam_dir_bytes' "$TMP" || true)
 mv "$TMP" "$OUT"
 chmod 644 "$OUT"
 
-log_info "wrote disk-dirs.prom"
+if [[ $dir_count -eq 0 ]]; then
+    log_warn "wrote disk-dirs.prom (dirs=0) — du produced no output"
+else
+    log_info "wrote disk-dirs.prom (dirs=${dir_count})"
+fi

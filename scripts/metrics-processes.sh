@@ -54,7 +54,9 @@ ps aux --sort=-%mem | awk -v excl="$EXCLUDE" "$NAME_FN"'
     }'
 } > "$TMP"
 
+cpu_count=$(grep -c '^nizam_process_cpu_percent' "$TMP" || true)
+mem_count=$(grep -c '^nizam_process_mem_rss_bytes' "$TMP" || true)
 mv "$TMP" "$OUT"
 chmod 644 "$OUT"
 
-log_info "wrote processes.prom"
+log_info "wrote processes.prom (cpu_top=${cpu_count}, mem_top=${mem_count})"
