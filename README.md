@@ -18,11 +18,11 @@ nizam-dotfiles/
 ├── shell/      zsh config, prompt theme, aliases
 ├── scripts/    metric collectors, alert setup, shared logger, install script
 ├── systemd/    service and timer units for each metric collector
-├── config/     logrotate, Loki, and Promtail configs
+├── config/     logrotate, loki, and promtail configs
 ├── grafana/    system dashboard JSON
 ├── secrets/    discord webhook URLs
-├── docs/       vision, setup guide, and system dashboard reference
-└── logs/       runtime script output (gitignored)
+├── docs/       vision, setup guide, and dashboard reference
+└── logs/       runtime script output
 ```
 
 ## Symlinks
