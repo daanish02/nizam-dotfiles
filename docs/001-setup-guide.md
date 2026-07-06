@@ -3,7 +3,7 @@
 **What this builds:** A hardened, monitored Ubuntu 24.04 VPS with a consistent shell environment, security baseline, and live Grafana dashboard — ready for nizam-os to install on top.
 
 **Reference:** [docs/system-dashboard.md](system-dashboard.md) for dashboard panels, alert rules, and operational reference.  
-**Next:** nizam-os [docs/guides/001-foundation.md](../../nizam-os/docs/guides/001-foundation.md)
+**Next:** nizam-os [docs/guides/001-foundation-guide.md](../../nizam-os/docs/guides/001-foundation.md)
 
 ---
 
@@ -150,11 +150,11 @@ sudo apt install -y prometheus prometheus-node-exporter
 
 # Grafana + Loki + Promtail (Grafana repo)
 sudo mkdir -p /etc/apt/keyrings
-wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
-echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | \
-  sudo tee /etc/apt/sources.list.d/grafana.list
-sudo apt update && sudo apt install -y grafana loki promtail
 
+wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
+
+sudo apt update && sudo apt install -y grafana loki promtail
 sudo systemctl enable --now prometheus grafana-server
 ```
 
@@ -178,16 +178,12 @@ sudo mkdir -p /var/lib/promtail
 Install Loki and Promtail configs, then start both:
 
 ```bash
-sudo bash ~/nizam-dotfiles/scripts/install.sh   # configs, systemd symlinks, promtail override (runs as root, uses config.yaml)
+# Configs, systemd symlinks, promtail override (runs as root, uses config.yaml)
+sudo bash ~/nizam-dotfiles/scripts/install.sh
 sudo systemctl enable --now loki promtail
 
-# Verify Loki is ready
-curl -s http://localhost:3100/ready
-# → ready
-
-# Verify Promtail is tracking logs (wait ~10s after start)
-ls /var/lib/promtail/positions.yaml
-# → /var/lib/promtail/positions.yaml
+curl -s http://localhost:3100/ready  # → ready
+ls /var/lib/promtail/positions.yaml  # → /var/lib/promtail/positions.yaml
 ```
 
 ---
@@ -277,44 +273,34 @@ Run after all steps complete:
 
 ```bash
 # SSH hardening
-sudo sshd -T | grep -E 'permitrootlogin|passwordauthentication|pubkeyauthentication'
-# → no / no / yes
+sudo sshd -T | grep -E 'permitrootlogin|passwordauthentication|pubkeyauthentication'  # → no / no / yes
 
-# Firewall — port 22 must not appear
-sudo ufw status
-# → no rule for 22/tcp
+# Firewall
+sudo ufw status  # → no rule for 22/tcp
 
 # Core services
-systemctl is-active fail2ban prometheus grafana-server prometheus-node-exporter loki promtail
-# → all: active
+systemctl is-active fail2ban prometheus grafana-server prometheus-node-exporter loki promtail  # → all: active
 
 # Loki ready
-curl -s http://localhost:3100/ready
-# → ready
+curl -s http://localhost:3100/ready  # → ready
 
 # Metric collectors
-systemctl is-active metrics-security.timer metrics-processes.timer metrics-disk.timer metrics-sessions.timer metrics-services.timer
-# → all: active
+systemctl is-active metrics-security.timer metrics-processes.timer metrics-disk.timer metrics-sessions.timer metrics-services.timer  # → all: active
 
-# Metric files (wait 2 min after timers start)
-ls /var/lib/prometheus/node-exporter/
-# → disk-dirs.prom  processes.prom  security.prom  sessions.prom  services.prom
+# Metric files (wait 2 mins)
+ls /var/lib/prometheus/node-exporter/  # → disk-dirs.prom  processes.prom  security.prom  sessions.prom  services.prom
 
 # Prometheus scraping nizam metrics
-curl -s http://localhost:9100/metrics | grep nizam_ssh
-# → nizam_ssh_failed_logins_total ...
+curl -s http://localhost:9100/metrics | grep nizam_ssh  # → nizam_ssh_failed_logins_total ...
 
 # Promtail tracking logs
-ls /var/lib/promtail/positions.yaml
-# → /var/lib/promtail/positions.yaml
+ls /var/lib/promtail/positions.yaml  # → /var/lib/promtail/positions.yaml
 
-# Loki receiving logs (wait ~30s after promtail start)
-curl -s 'http://localhost:3100/loki/api/v1/labels' | python3 -c "import json,sys; d=json.load(sys.stdin); print(d['data'])"
-# → ['host', 'job', 'level', 'service']
+# Loki receiving logs (wait 30s)
+curl -s 'http://localhost:3100/loki/api/v1/labels' | python3 -c "import json,sys; d=json.load(sys.stdin); print(d['data'])"  # → ['host', 'job', 'level', 'service']
 
 # Tailscale connected
-tailscale status
-# → nizam-vps  <tailscale-ip>  ...  online
+tailscale status  # → nizam-vps  <tailscale-ip>  ...  online
 ```
 
 ---
@@ -323,4 +309,4 @@ tailscale status
 
 Machine is ready. Continue with nizam-os setup:
 
-**[nizam-os Phase 1 — Foundation](../../nizam-os/docs/guides/001-foundation.md):** PostgreSQL, Redis, LiteLLM, audit schema.
+**[Nizam OS — Phase 1 Foundation](../../nizam-os/docs/guides/001-foundation.md):** PostgreSQL, Redis, LiteLLM, audit schema.

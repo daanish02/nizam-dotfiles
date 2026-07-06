@@ -102,13 +102,13 @@ All-time counters except Currently Banned and Active SSH Sessions, which reflect
 | Currently Banned | IPs currently blocked by fail2ban |
 | UFW Blocked Packets | Total packets dropped by the firewall |
 | Active SSH Sessions | Count of currently active SSH sessions; alert fires at >1 |
-| Availability | % of tracked services active (`sum(nizam_service_up) / count(nizam_service_up) * 100`) |
+| Availability | % of tracked services active |
 
 High totals on a public-facing VPS are expected noise. Currently Banned rises and falls as bans expire.
 
 ### SSH session history
 
-Table showing sessions from the last 24 hours: `max_over_time(nizam_ssh_session_seconds[24h])` per `{user, pts, from}`. Rows persist after a session ends — the Duration column shows the total session length at disconnect. Columns: User, Source (from IP), Terminal (pts), Duration.
+Table of SSH sessions using `max_over_time(nizam_ssh_session_seconds[24h])` per `{user, pts, from}`. The `[24h]` is a lookback window — Prometheus returns the maximum value seen in the last 24 hours for each session label set. This means rows survive disconnect: the Duration column freezes at the final session length when the session ends, and disappears 24 hours later. Columns: User, Source (from IP), Terminal (pts), Duration.
 
 ### Service up/down
 
@@ -145,15 +145,64 @@ Unified alerting via Grafana → Discord. Two severity levels, two contact point
 | `nizam-warn` | `DISCORD_WEBHOOK_WARNING` | `severity=warning` |
 | `nizam-crit` | `DISCORD_WEBHOOK_CRITICAL` | `severity=critical` |
 
-Webhooks are read from `secrets/nizam-dotfiles.env` at run time. To configure:
+Webhooks are read from `secrets/nizam-dotfiles.env` at run time.
+
+### Setup via script (recommended)
 
 ```bash
 cp ~/nizam-dotfiles/secrets/nizam-dotfiles.env.example ~/nizam-dotfiles/secrets/nizam-dotfiles.env
-# fill in webhook URLs, then:
+# fill in DISCORD_WEBHOOK_WARNING and DISCORD_WEBHOOK_CRITICAL, then:
 bash ~/nizam-dotfiles/scripts/setup-alerts.sh
 ```
 
 The script is idempotent — safe to re-run. It deletes and recreates all rules in `nizam-system` group on each run.
+
+### Setup via Grafana UI
+
+**1. Contact points**
+
+Alerting → Contact points → + Add contact point
+
+| Field | `nizam-warn` | `nizam-crit` |
+|---|---|---|
+| Name | `nizam-warn` | `nizam-crit` |
+| Integration | Discord | Discord |
+| Webhook URL | `DISCORD_WEBHOOK_WARNING` value | `DISCORD_WEBHOOK_CRITICAL` value |
+
+Save each. Test with the Test button.
+
+**2. Notification policy**
+
+Alerting → Notification policies → Edit root policy → Default receiver: `nizam-crit`
+
+Add two nested policies under root:
+
+| Matcher | Receiver | Group wait | Repeat interval |
+|---|---|---|---|
+| `severity = warning` | `nizam-warn` | 30s | 4h |
+| `severity = critical` | `nizam-crit` | 10s | 1h |
+
+**3. Alert folder**
+
+Dashboards → New → New folder → name: `nizam-alerts`
+
+**4. Alert rules**
+
+Alerting → Alert rules → + New alert rule. For each rule, set folder `nizam-alerts`, group `nizam-system`, add label `severity=<value>`, set **For** duration, then define two query nodes:
+
+- **A** — datasource `nizam-prometheus`, expression as shown, instant query
+- **B** — datasource `-- Expression --`, type `Classic conditions`, input A, evaluator as shown
+
+| Rule | Expression (A) | Evaluator (B) | Severity | For |
+|---|---|---|---|---|
+| CPU High Warning | `100 - (avg(rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)` | IS ABOVE 70 | warning | 5m |
+| CPU High Critical | same as above | IS ABOVE 90 | critical | 5m |
+| Memory High Warning | `(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100` | IS ABOVE 75 | warning | 5m |
+| Memory High Critical | same as above | IS ABOVE 90 | critical | 5m |
+| Disk Full Warning | `(1 - (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"})) * 100` | IS ABOVE 70 | warning | 1m |
+| Disk Full Critical | same as above | IS ABOVE 90 | critical | 1m |
+| Service Down | `min(nizam_service_up)` | IS EQUAL TO 0 | critical | 2m |
+| SSH Session Count | `nizam_ssh_active_sessions` | IS ABOVE 1 | critical | 30s |
 
 ### Routing
 
