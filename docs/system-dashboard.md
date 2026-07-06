@@ -145,10 +145,10 @@ Unified alerting via Grafana → Discord. Two severity levels, two contact point
 | `nizam-warn` | `DISCORD_WEBHOOK_WARNING` | `severity=warning` |
 | `nizam-crit` | `DISCORD_WEBHOOK_CRITICAL` | `severity=critical` |
 
-Webhooks are read from `secrets/nizam.env` at run time. To configure:
+Webhooks are read from `secrets/nizam-dotfiles.env` at run time. To configure:
 
 ```bash
-cp ~/nizam-dotfiles/secrets/nizam.env.example ~/nizam-dotfiles/secrets/nizam.env
+cp ~/nizam-dotfiles/secrets/nizam-dotfiles.env.example ~/nizam-dotfiles/secrets/nizam-dotfiles.env
 # fill in webhook URLs, then:
 bash ~/nizam-dotfiles/scripts/setup-alerts.sh
 ```
