@@ -1,0 +1,9 @@
+[Unit]
+Description=Run metrics-sessions every 30 seconds
+
+[Timer]
+OnCalendar=*:*:15,45
+AccuracySec=1s
+
+[Install]
+WantedBy=timers.target
