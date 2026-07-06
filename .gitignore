@@ -1,7 +1,4 @@
-inventory/*.sha256
-inventory/last.diff
 *.env
-*-age-key.txt
 logs/*.log
 logs/*.gz
 !logs/.gitkeep
