@@ -12,7 +12,7 @@
 set -euo pipefail
 
 SCRIPT_NAME="setup-alerts"
-source "$(dirname "$0")/_log.sh"
+source "$(dirname "$0")/../shared/_log.sh"
 
 GRAFANA_URL="${GRAFANA_URL:-http://localhost:3000}"
 GRAFANA_AUTH="${GRAFANA_AUTH:-admin:admin}"

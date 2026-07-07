@@ -4,8 +4,8 @@
 set -euo pipefail
 
 SCRIPT_NAME="metrics-processes"
-# shellcheck source=_log.sh
-source "$(dirname "$0")/_log.sh"
+# shellcheck source=../shared/_log.sh
+source "$(dirname "$0")/../shared/_log.sh"
 
 OUT="/var/lib/prometheus/node-exporter/processes.prom"
 TMP=$(mktemp)
