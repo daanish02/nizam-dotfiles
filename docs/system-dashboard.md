@@ -59,7 +59,7 @@ Seven tiles giving a live snapshot. Color thresholds: green (normal), orange (wa
 | Disk Usage | % of root partition used | Orange >70%, red >90% |
 | Load Avg (1m) | Processes waiting to run | Red >2.0 on a 2-core VPS |
 | TCP Connections | Active TCP connections | — |
-| Services | % of tracked services currently active | Yellow <100%, red <80% |
+| Services | % of tracked services currently active | Red <100% |
 
 An unexpected uptime reset means the server rebooted. A full root partition silently crashes services that attempt writes.
 
