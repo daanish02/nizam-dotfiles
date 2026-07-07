@@ -17,7 +17,7 @@ _step() { echo ""; echo "==> $*"; }
 # Step 1: SSH hardening
 _step "SSH hardening"
 mkdir -p /etc/ssh/sshd_config.d
-cat > /etc/ssh/sshd_config.d/nizam-hardening.conf << 'EOF'
+cat > /etc/ssh/sshd_config.d/50-cloud-init.conf << 'EOF'
 PasswordAuthentication no
 PermitRootLogin no
 PubkeyAuthentication yes
