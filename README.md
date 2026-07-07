@@ -1,6 +1,6 @@
 # nizam-dotfiles
 
-The machine layer for nizam-vps. It configures the shell, secures remote access, pipes system health data into Grafana, and ships logs to Loki — before any application runs.
+The machine layer for **nizam-vps**. It configures the shell, secures remote access, pipes system health data into Grafana, and ships logs to Loki — before any application runs.
 
 ## What it does
 
@@ -55,13 +55,13 @@ nizam-dotfiles/
 Discord webhooks are read from `secrets/nizam-dotfiles.env`. To configure:
 
 ```bash
-cp secrets/nizam-dotfiles.env.example secrets/nizam-dotfiles.env  # fill values
+cp secrets/nizam-dotfiles.env.example secrets/nizam-dotfiles.env  # enter secrets
 bash scripts/setup-alerts.sh
 ```
 
 ## Boundary
 
-Would this file belong on this server even without Nizam-OS running? Yes → here. No → nizam-os.
+Would this file belong on this server even without **Nizam** running? Yes → here. No → nizam-os.
 
 ## Setup
 
