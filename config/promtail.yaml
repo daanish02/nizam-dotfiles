@@ -21,10 +21,10 @@ scrape_configs:
       - json:
           expressions:
             level: level
-            service: service
+            script: script
       - template:
           source: level
           template: '{{ ToLower .Value }}'
       - labels:
           level:
-          service:
+          script:
