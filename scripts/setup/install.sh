@@ -41,12 +41,12 @@ if [[ -d /etc/promtail ]]; then
     # The upstream unit hardcodes config.yml — clear ExecStart first, then set new path.
     mkdir -p /etc/systemd/system/promtail.service.d
     cat > /etc/systemd/system/promtail.service.d/override.conf << 'EOF'
-    [Service]
-    User=root
-    Group=root
-    ExecStart=
-    ExecStart=/usr/bin/promtail -config.file /etc/promtail/config.yaml
-    EOF
+[Service]
+User=root
+Group=root
+ExecStart=
+ExecStart=/usr/bin/promtail -config.file /etc/promtail/config.yaml
+EOF
     echo "  installed promtail service override"
 fi
 
