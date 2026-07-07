@@ -2,7 +2,7 @@
 
 **What this builds:** A hardened, monitored Ubuntu 24.04 VPS with a consistent shell environment, security baseline, and live Grafana dashboard — ready for nizam-os to install on top.
 
-**Reference:** [docs/system-dashboard.md](system-dashboard.md) for dashboard panels, alert rules, and operational reference.  
+**Reference:** [docs/001-system-dashboard.md](system-dashboard.md) for dashboard panels, alert rules, and operational reference.  
 **Next:** nizam-os [docs/guides/001-foundation-guide.md](../../nizam-os/docs/guides/001-foundation.md)
 
 ---
@@ -179,7 +179,7 @@ Install Loki and Promtail configs, then start both:
 
 ```bash
 # Configs, systemd symlinks, promtail override (runs as root, uses config.yaml)
-sudo bash ~/nizam-dotfiles/scripts/install.sh
+sudo bash ~/nizam-dotfiles/scripts/setup/install.sh
 sudo systemctl enable --now loki promtail
 
 curl -s http://localhost:3100/ready  # → ready
@@ -191,7 +191,7 @@ ls /var/lib/promtail/positions.yaml  # → /var/lib/promtail/positions.yaml
 ## Step 7 — Metric collectors
 
 ```bash
-chmod +x ~/nizam-dotfiles/scripts/metrics-sessions.sh ~/nizam-dotfiles/scripts/metrics-services.sh
+chmod +x ~/nizam-dotfiles/scripts/metrics/metrics-sessions.sh ~/nizam-dotfiles/scripts/metrics/metrics-services.sh
 
 sudo systemctl enable --now \
   metrics-security.timer \
@@ -256,14 +256,14 @@ Open Grafana at `http://<tailscale-ip>:3000` (default login: admin/admin — cha
 
 **Dashboard:**
 
-3. Dashboards → New → Import → upload `grafana/system-dashboard.json`
+3. Dashboards → New → Import → upload `grafana/001-system-dashboard.json`
    - Select the Prometheus datasource when prompted
 
 **Alerts:**
 
 4. Alerting → Contact points → Add — create `nizam-warn` and `nizam-crit` with your Discord webhook URLs
 5. Alerting → Notification policies — route `severity=warning` to `nizam-warn`, `severity=critical` to `nizam-crit`
-6. Import alert rules from `grafana/alert-rules.json` if available, or add manually per [system-dashboard.md](system-dashboard.md#alert-rules)
+6. Import alert rules from `grafana/alert-rules.json` if available, or add manually per [001-system-dashboard.md](system-dashboard.md#alert-rules)
 
 ---
 
