@@ -14,6 +14,7 @@ REPOS=(
     "$HOME/nizam-dotfiles|dotfiles"
     "$HOME/nizam-vault|vault"
     "$HOME/nizam-os|os"
+    "$HOME/.hermes|.hermes-src"
 )
 
 echo
