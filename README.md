@@ -13,12 +13,12 @@ The machine layer for nizam-vps. It configures the shell, secures remote access,
 
 ## Repo layout
 
-```bash
+```
 nizam-dotfiles/
 ├── shell/      zsh config, prompt theme, aliases
-├── scripts/    metric collectors, alert setup, shared logger, install script
+├── scripts/    metric collectors, shared logger, setup scripts
 ├── systemd/    service and timer units for each metric collector
-├── config/     logrotate, loki, and promtail configs
+├── config/     logrotate, loki, promtail configs
 ├── grafana/    system dashboard JSON
 ├── secrets/    discord webhook URLs
 ├── docs/       vision, setup guide, and dashboard reference
@@ -30,7 +30,7 @@ nizam-dotfiles/
 `scripts/install.sh` wires everything into place. Re-run after pulling changes.
 
 | Source | Target |
-|---|---|
+|--------|--------|
 | `shell/.zshrc` | `~/.zshrc` |
 | `shell/.p10k.zsh` | `~/.p10k.zsh` |
 | `shell/.zsh-aliases` | `~/.zsh-aliases` |
@@ -52,11 +52,10 @@ nizam-dotfiles/
 
 ## Alerts
 
-Discord webhooks are read from `secrets/nizam-dotfiles.env` (gitignored). To configure:
+Discord webhooks are read from `secrets/nizam-dotfiles.env`. To configure:
 
 ```bash
-cp secrets/nizam-dotfiles.env.example secrets/nizam-dotfiles.env
-# fill in DISCORD_WEBHOOK_WARNING and DISCORD_WEBHOOK_CRITICAL
+cp secrets/nizam-dotfiles.env.example secrets/nizam-dotfiles.env  # fill values
 bash scripts/setup-alerts.sh
 ```
 
@@ -66,8 +65,8 @@ Would this file belong on this server even without Nizam-OS running? Yes → her
 
 ## Setup
 
-See [SETUP GUIDE](docs/001-setup-guide.md) to go from a fresh VPS to a ready machine.  
-Dashboard, alerts, and operational reference: [SYSTEM DASHBOARD](docs/system-dashboard.md)
+See [MACHINE SETUP GUIDE](docs/001-machine-setup-guide.md) to go from a fresh VPS to a ready machine.  
+Dashboard, alerts, and operational reference: [SYSTEM DASHBOARD](docs/001-system-dashboard.md)
 
 ---
 
