@@ -3,6 +3,6 @@ Description=Collect active SSH session metrics
 
 [Service]
 Type=oneshot
-ExecStart=/home/vazir/nizam-dotfiles/scripts/metrics-sessions.sh
+ExecStart=/home/vazir/nizam-dotfiles/scripts/metrics/metrics-sessions.sh
 User=root
 Environment=HOME=/home/vazir

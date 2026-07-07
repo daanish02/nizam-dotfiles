@@ -3,6 +3,6 @@ Description=Collect top CPU and memory process metrics
 
 [Service]
 Type=oneshot
-ExecStart=/home/vazir/nizam-dotfiles/scripts/metrics-processes.sh
+ExecStart=/home/vazir/nizam-dotfiles/scripts/metrics/metrics-processes.sh
 User=root
 Environment=HOME=/home/vazir
