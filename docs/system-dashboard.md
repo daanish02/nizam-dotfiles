@@ -93,7 +93,7 @@ Both panels use instant queries to avoid range queries returning >5 series when 
 
 ### Security & availability tiles
 
-All-time counters except Currently Banned and Active SSH Sessions, which reflect live state. The Availability tile also lives in this row.
+All-time counters except Currently Banned and Active SSH Sessions, which reflect live state. Availability reflects rolling 24h uptime — can be below 100% even if all services are currently up.
 
 | Tile | Metric |
 |---|---|
@@ -102,7 +102,7 @@ All-time counters except Currently Banned and Active SSH Sessions, which reflect
 | Currently Banned | IPs currently blocked by fail2ban |
 | UFW Blocked Packets | Total packets dropped by the firewall |
 | Active SSH Sessions | Count of currently active SSH sessions; alert fires at >1 |
-| Availability | % of tracked services active |
+| Availability (24h) | Rolling 24h uptime across all tracked services |
 
 High totals on a public-facing VPS are expected noise. Currently Banned rises and falls as bans expire.
 
