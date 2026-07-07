@@ -1,14 +1,7 @@
 #!/usr/bin/env bash
-# Configure Grafana alert rules and Discord contact points.
-# Run once after monitoring stack is up, or re-run to update.
-#
-# Required env vars:
-#   DISCORD_WEBHOOK_WARNING   — Discord webhook URL for warning alerts
-#   DISCORD_WEBHOOK_CRITICAL  — Discord webhook URL for critical alerts
-#
-# Optional:
-#   GRAFANA_URL   (default: http://localhost:3000)
-#   GRAFANA_AUTH  (default: admin:admin)
+# Configure Grafana alert rules and Discord contact points. Idempotent.
+# Reads DISCORD_WEBHOOK_WARNING, DISCORD_WEBHOOK_CRITICAL, GRAFANA_AUTH from secrets/nizam-dotfiles.env
+# Override: GRAFANA_URL (default: http://localhost:3000), GRAFANA_AUTH (default: admin:admin)
 set -euo pipefail
 
 SCRIPT_NAME="setup-alerts"
