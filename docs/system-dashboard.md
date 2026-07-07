@@ -10,9 +10,9 @@ Live system health via Prometheus + Loki → Grafana. Covers the metric pipeline
 graph LR
     A[metrics-security.sh] --> P[textfile collector]
     B[metrics-processes.sh] --> P
-    C[metrics-disk.sh] --> P
-    D[metrics-sessions.sh] --> P
-    E[metrics-services.sh] --> P
+    C[metrics-sessions.sh] --> P
+    D[metrics-services.sh] --> P
+    E[metrics-disk.sh] --> P
     P --> N[node-exporter :9100]
     N --> PR[Prometheus :9090]
     PR --> G[Grafana :3000]
@@ -37,17 +37,17 @@ All five write Prometheus textfiles to `/var/lib/prometheus/node-exporter/`. nod
 
 ## Dashboard import
 
-Grafana, Prometheus, Loki, and Promtail are installed in `docs/001-setup-guide.md`. Once running:
+Grafana, Prometheus, Loki, and Promtail are installed in `docs/001-machine-setup-guide.md`. Once running:
 
 1. Connections → Data Sources → Add → **Prometheus** — URL: `http://localhost:9090`, UID: `nizam-prometheus` → Save & Test
 2. Connections → Data Sources → Add → **Loki** — URL: `http://localhost:3100`, UID: `nizam-loki` → Save & Test
-3. Dashboards → New → Import → upload `grafana/system-dashboard.json`
+3. Dashboards → New → Import → upload `grafana/001-system-dashboard.json`
 
 ---
 
 ## Dashboard panels
 
-### Stat tiles (top row)
+### Stat tiles
 
 Seven tiles giving a live snapshot. Color thresholds: green (normal), orange (warning), red (critical).
 
@@ -91,7 +91,7 @@ Two bar gauges showing top 5 consumers, updated every 30 seconds.
 
 Both panels use instant queries to avoid range queries returning >5 series when different processes enter the top 5 at different timestamps. `du`, `ps`, `awk`, `grep`, `sh`, and `bash` are excluded — they appear briefly at 100% CPU during collection and carry no diagnostic signal.
 
-### Security tiles
+### Security & availability tiles
 
 All-time counters except Currently Banned and Active SSH Sessions, which reflect live state. The Availability tile also lives in this row.
 
@@ -108,20 +108,20 @@ High totals on a public-facing VPS are expected noise. Currently Banned rises an
 
 ### SSH session history
 
-Table of SSH sessions using `max_over_time(nizam_ssh_session_seconds[24h])` per `{user, pts, from}`. The `[24h]` is a lookback window — Prometheus returns the maximum value seen in the last 24 hours for each session label set. This means rows survive disconnect: the Duration column freezes at the final session length when the session ends, and disappears 24 hours later. Columns: User, Source (from IP), Terminal (pts), Duration.
+Table of SSH sessions over a 24 hour window — Prometheus returns the maximum value seen in the last 24 hours for each session label set. This means rows survive disconnect: the Duration column freezes at the final session length when the session ends, and disappears 24 hours later.
 
 ### Service up/down
 
-State timeline of `nizam_service_up` per service — gaps are immediately visible. Services tracked: `prometheus`, `grafana-server`, `fail2ban`, `prometheus-node-exporter`, `loki`, `promtail`, and all five metric timers.
+State timeline per service — gaps are immediately visible.
 
 ### Security events timeline
 
 Shows the **1-hour increase** in each security counter — converts flat all-time totals into activity spikes. A coordinated spike across SSH failures and UFW blocks indicates an active scan or brute-force attempt. fail2ban responds automatically; this panel shows that it happened.
 
-### Logs (Loki)
+### Logs
 
-- **Log volume by level** — stacked bars of `sum by (level) (count_over_time({job="nizam-dotfiles"} | json [$__interval]))`. Shows INFO/WARN/ERROR distribution over time.
-- **Log stream** — `{job="nizam-dotfiles"}`. Live tail of all script output, pretty-printed JSON with colored level badge. Filter by `service` label to isolate a specific collector.
+- **Log volume by level** — Stacked bar chart. One stack per level, colored by severity: INFO (green), WARNING (orange), ERROR (red). Shows INFO/WARNING/ERROR distribution over time. Filter by `script` label to isolate a specific script.
+- **Log stream** — Live tail of all script output, pretty-printed JSON with colored level badge.
 
 ---
 
@@ -151,11 +151,11 @@ Webhooks are read from `secrets/nizam-dotfiles.env` at run time.
 
 ```bash
 cp ~/nizam-dotfiles/secrets/nizam-dotfiles.env.example ~/nizam-dotfiles/secrets/nizam-dotfiles.env
-# fill in DISCORD_WEBHOOK_WARNING and DISCORD_WEBHOOK_CRITICAL, then:
-bash ~/nizam-dotfiles/scripts/setup-alerts.sh
+# fill secrets
+bash ~/nizam-dotfiles/scripts/setup/setup-alerts.sh
 ```
 
-The script is idempotent — safe to re-run. It deletes and recreates all rules in `nizam-system` group on each run.
+The script is idempotent — safe to re-run. It deletes and recreates all rules in `nizam-vps` group on each run.
 
 ### Setup via Grafana UI
 
@@ -188,7 +188,7 @@ Dashboards → New → New folder → name: `nizam-alerts`
 
 **4. Alert rules**
 
-Alerting → Alert rules → + New alert rule. For each rule, set folder `nizam-alerts`, group `nizam-system`, add label `severity=<value>`, set **For** duration, then define two query nodes:
+Alerting → Alert rules → + New alert rule. For each rule, set folder `nizam-alerts`, group `nizam-vps`, add label `severity=<value>`, set **For** duration, then define two query nodes:
 
 - **A** — datasource `nizam-prometheus`, expression as shown, instant query
 - **B** — datasource `-- Expression --`, type `Classic conditions`, input A, evaluator as shown
@@ -215,7 +215,7 @@ Critical fires immediately and repeats hourly until resolved. Warning batches wi
 
 ### Alert rules
 
-All rules live in folder `nizam-alerts`, group `nizam-system`. Each threshold is a separate rule with a `severity` label — routing is driven entirely by that label.
+All rules live in folder `nizam-alerts`, group `nizam-vps`. Each threshold is a separate rule with a `severity` label — routing is driven entirely by that label.
 
 | Rule | Warning | Critical | For |
 |---|---|---|---|
@@ -233,7 +233,7 @@ All rules live in folder `nizam-alerts`, group `nizam-system`. Each threshold is
 
 **Test a contact point:** Grafana → Alerting → Contact points → `nizam-warn` or `nizam-crit` → Test
 
-**Update a threshold:** edit `scripts/setup-alerts.sh`, re-run the script
+**Update a threshold:** edit `scripts/setup/setup-alerts.sh`, re-run the script
 
 ---
 
@@ -273,7 +273,7 @@ sudo journalctl -u metrics-disk.service -n 10 --no-pager
 
 All metric scripts write structured JSON to `~/nizam-dotfiles/logs/scripts.log`.
 
-Format: `{"ts":"...","level":"INFO","service":"script-name","msg":"..."}`
+Format: `{"ts":"...", "level":"INFO", "script":"script-name", "msg":"..."}`
 
 ```bash
 tail -f ~/nizam-dotfiles/logs/scripts.log
@@ -298,7 +298,7 @@ ls -la \
   /etc/systemd/system/metrics-services.timer
 ```
 
-All entries must point to `/home/vazir/nizam-dotfiles/systemd/...`. Re-run `sudo bash scripts/install.sh` if any symlink is missing or stale.
+All entries must point to `/home/vazir/nizam-dotfiles/systemd/...`. Re-run `sudo bash scripts/setup/install.sh` if any symlink is missing or stale.
 
 ### Common fixes
 
@@ -307,6 +307,6 @@ All entries must point to `/home/vazir/nizam-dotfiles/systemd/...`. Re-run `sudo
 | `.prom` file not updating | `sudo systemctl start metrics-<name>.service && sudo journalctl -u metrics-<name>.service -n 5 --no-pager` |
 | Grafana panel shows >5 processes | Stale Prometheus series — wait 5 min for the lookback window to expire |
 | `du` or `ps` at 100% in CPU panel | EXCLUDE pattern in `metrics-processes.sh` missing `du` or `ps` |
-| Symlinks missing after git pull | `sudo bash scripts/install.sh` |
+| Symlinks missing after git pull | `sudo bash scripts/setup/install.sh` |
 | logrotate errors | `sudo logrotate -d /etc/logrotate.d/nizam-dotfiles` — confirm owner is root |
 | Prometheus not showing nizam metrics | `curl -s http://localhost:9100/metrics \| grep nizam_` |
