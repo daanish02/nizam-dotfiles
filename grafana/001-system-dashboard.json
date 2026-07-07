@@ -19,7 +19,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 2366937212657664,
   "liveNow": false,
   "panels": [
     {
@@ -428,6 +427,77 @@
         }
       ],
       "title": "TCP Connections",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "displayName": "Services",
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 80
+              },
+              {
+                "color": "green",
+                "value": 100
+              }
+            ]
+          },
+          "unit": "percent"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 21,
+        "y": 0
+      },
+      "id": 26,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "13.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(nizam_service_up) / count(nizam_service_up) * 100",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "Services",
       "transparent": true,
       "type": "stat"
     },
@@ -1421,6 +1491,103 @@
       "fieldConfig": {
         "defaults": {
           "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "fillOpacity": 70,
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineWidth": 0,
+            "spanNulls": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "red",
+                  "text": "DOWN"
+                },
+                "1": {
+                  "color": "#00D4A3",
+                  "text": "UP"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "#00D4A3",
+                "value": 1
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 34
+      },
+      "id": 22,
+      "options": {
+        "alignValue": "left",
+        "annotations": {
+          "clustering": -1,
+          "multiLane": false
+        },
+        "fillOpacity": 70,
+        "legend": {
+          "displayMode": "hidden",
+          "overflow": "ellipsis",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "mergeValues": true,
+        "rowHeight": 0.9,
+        "showValue": "never",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "nizam_service_up",
+          "legendFormat": "{{service}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Service Up/Down",
+      "transparent": true,
+      "type": "state-timeline"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
             "fixedColor": "#F2495C",
             "mode": "fixed"
           },
@@ -1440,7 +1607,7 @@
         "h": 4,
         "w": 4,
         "x": 0,
-        "y": 34
+        "y": 42
       },
       "id": 13,
       "options": {
@@ -1503,7 +1670,7 @@
         "h": 4,
         "w": 4,
         "x": 4,
-        "y": 34
+        "y": 42
       },
       "id": 14,
       "options": {
@@ -1573,7 +1740,7 @@
         "h": 4,
         "w": 4,
         "x": 8,
-        "y": 34
+        "y": 42
       },
       "id": 15,
       "options": {
@@ -1636,7 +1803,7 @@
         "h": 4,
         "w": 4,
         "x": 12,
-        "y": 34
+        "y": 42
       },
       "id": 16,
       "options": {
@@ -1671,6 +1838,275 @@
       "title": "UFW Blocked Packets",
       "transparent": true,
       "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "#00D4A3",
+                  "text": "None"
+                },
+                "1": {
+                  "color": "#00D4A3",
+                  "text": "1"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#00D4A3",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 2
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 42
+      },
+      "id": 20,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "13.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "nizam_ssh_active_sessions",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "Active SSH Sessions",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 1,
+          "displayName": "Availability",
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 80
+              },
+              {
+                "color": "green",
+                "value": 100
+              }
+            ]
+          },
+          "unit": "percent"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 42
+      },
+      "id": 27,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "13.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "sum(nizam_service_up) / count(nizam_service_up) * 100",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "Availability",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": false,
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Duration"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 46
+      },
+      "id": 21,
+      "options": {
+        "cellHeight": "sm",
+        "columnWidthRatio": 1,
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Duration"
+          }
+        ]
+      },
+      "pluginVersion": "13.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "max_over_time(nizam_ssh_session_seconds[24h])",
+          "instant": true,
+          "legendFormat": "__auto",
+          "refId": "A"
+        }
+      ],
+      "title": "SSH Session History",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "mode": "columns"
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true
+            },
+            "indexByName": {
+              "Duration": 3,
+              "Source": 1,
+              "Terminal": 2,
+              "User": 0
+            },
+            "renameByName": {
+              "Value": "Duration",
+              "from": "Source",
+              "nizam_ssh_session_seconds": "Duration",
+              "pts": "Terminal",
+              "user": "User"
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
     },
     {
       "datasource": {
@@ -1860,267 +2296,9 @@
       "type": "timeseries"
     },
     {
-      "id": 20,
-      "title": "Active SSH Sessions",
-      "type": "stat",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 16,
-        "y": 34
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#00D4A3",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 2
-              }
-            ]
-          },
-          "unit": "short",
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": {
-                  "text": "None",
-                  "color": "#00D4A3"
-                },
-                "1": {
-                  "text": "1",
-                  "color": "#00D4A3"
-                }
-              }
-            }
-          ]
-        }
-      },
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "13.1.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "nizam_ssh_active_sessions",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "transparent": true
-    },
-    {
-      "id": 21,
-      "title": "SSH Session History",
-      "type": "table",
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 38
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "options": {
-        "showHeader": true,
-        "sortBy": [
-          {
-            "displayName": "Duration",
-            "desc": true
-          }
-        ],
-        "footer": {
-          "show": false
-        },
-        "columnWidthRatio": 1
-      },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "displayMode": "auto",
-            "filterable": false
-          },
-          "mappings": []
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Duration"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "s"
-              }
-            ]
-          }
-        ]
-      },
-      "targets": [
-        {
-          "expr": "max_over_time(nizam_ssh_session_seconds[24h])",
-          "instant": true,
-          "legendFormat": "__auto",
-          "refId": "A"
-        }
-      ],
-      "transformations": [
-        {
-          "id": "labelsToFields",
-          "options": {
-            "mode": "columns"
-          }
-        },
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "__name__": true
-            },
-            "renameByName": {
-              "nizam_ssh_session_seconds": "Duration",
-              "Value": "Duration",
-              "user": "User",
-              "pts": "Terminal",
-              "from": "Source"
-            },
-            "indexByName": {
-              "User": 0,
-              "Source": 1,
-              "Terminal": 2,
-              "Duration": 3
-            }
-          }
-        }
-      ],
-      "transparent": true
-    },
-    {
-      "id": 22,
-      "title": "Service Up/Down",
-      "type": "state-timeline",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 46
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": 0
-              },
-              {
-                "color": "#00D4A3",
-                "value": 1
-              }
-            ]
-          },
-          "custom": {
-            "fillOpacity": 70,
-            "lineWidth": 0,
-            "spanNulls": false
-          },
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": {
-                  "text": "DOWN",
-                  "color": "red"
-                },
-                "1": {
-                  "text": "UP",
-                  "color": "#00D4A3"
-                }
-              }
-            }
-          ]
-        }
-      },
-      "options": {
-        "mergeValues": true,
-        "showValue": "never",
-        "fillOpacity": 70,
-        "legendDisplayMode": "list",
-        "tooltip": {
-          "mode": "single"
-        }
-      },
-      "pluginVersion": "13.1.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "nizam_service_up",
-          "legendFormat": "{{service}}",
-          "refId": "A"
-        }
-      ],
-      "transparent": true
-    },
-    {
-      "id": 24,
-      "title": "Log Volume by Level",
-      "type": "timeseries",
       "datasource": {
         "type": "loki",
         "uid": "${loki_datasource}"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 62
       },
       "fieldConfig": {
         "defaults": {
@@ -2128,15 +2306,51 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "bars",
             "fillOpacity": 80,
             "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
             "lineWidth": 0,
             "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "normal"
+              "mode": "percent"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
             }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
           }
         },
         "overrides": [
@@ -2158,7 +2372,8 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "warn"
+              "options": "warn",
+              "scope": "series"
             },
             "properties": [
               {
@@ -2179,7 +2394,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#00D4A3",
+                  "fixedColor": "semi-dark-green",
                   "mode": "fixed"
                 }
               }
@@ -2187,13 +2402,30 @@
           }
         ]
       },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 62
+      },
+      "id": 24,
       "options": {
+        "annotations": {
+          "clustering": -1,
+          "multiLane": false
+        },
         "legend": {
+          "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "enableFacetedFilter": false,
+          "overflow": "ellipsis",
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "multi"
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "pluginVersion": "13.1.0",
@@ -2203,17 +2435,19 @@
             "type": "loki",
             "uid": "${loki_datasource}"
           },
-          "expr": "sum by (level) (count_over_time({job=\"nizam-dotfiles\"} | json [$__interval]))",
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "sum by (level) (count_over_time({job=\"nizam-dotfiles\"} | json [5m]))",
           "legendFormat": "{{level}}",
+          "queryType": "range",
           "refId": "A"
         }
       ],
-      "transparent": true
+      "title": "Log Volume by Level",
+      "transparent": true,
+      "type": "timeseries"
     },
     {
-      "id": 25,
-      "title": "Log Stream",
-      "type": "logs",
       "datasource": {
         "type": "loki",
         "uid": "${loki_datasource}"
@@ -2224,6 +2458,7 @@
         "x": 8,
         "y": 62
       },
+      "id": 25,
       "options": {
         "dedupStrategy": "none",
         "enableInfiniteScrolling": false,
@@ -2252,130 +2487,9 @@
           "refId": "A"
         }
       ],
-      "transparent": true
-    },
-    {
-      "id": 26,
-      "title": "Services",
-      "type": "stat",
-      "gridPos": {
-        "h": 4,
-        "w": 3,
-        "x": 21,
-        "y": 0
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "orientation": "auto",
-        "textMode": "value",
-        "graphMode": "none",
-        "colorMode": "background"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "displayName": "Services",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 80
-              },
-              {
-                "color": "green",
-                "value": 100
-              }
-            ]
-          },
-          "mappings": []
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "sum(nizam_service_up) / count(nizam_service_up) * 100",
-          "legendFormat": "",
-          "refId": "A",
-          "instant": true
-        }
-      ],
-      "transformations": [],
-      "transparent": true
-    },
-    {
-      "id": 27,
-      "title": "Availability",
-      "type": "stat",
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 20,
-        "y": 34
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "orientation": "auto",
-        "textMode": "value",
-        "graphMode": "none",
-        "colorMode": "background"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "displayName": "Availability",
-          "decimals": 1,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 80
-              },
-              {
-                "color": "green",
-                "value": 100
-              }
-            ]
-          },
-          "mappings": []
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "sum(nizam_service_up) / count(nizam_service_up) * 100",
-          "legendFormat": "",
-          "refId": "A",
-          "instant": true
-        }
-      ],
-      "transformations": [],
-      "transparent": true
+      "title": "Log Stream",
+      "transparent": true,
+      "type": "logs"
     }
   ],
   "preload": false,
@@ -2445,6 +2559,5 @@
   },
   "timezone": "browser",
   "title": "Nizam \u2014 System",
-  "uid": "nizam-system",
-  "version": 17
+  "uid": "nizam-system"
 }
