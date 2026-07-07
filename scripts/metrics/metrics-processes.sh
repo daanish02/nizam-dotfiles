@@ -59,4 +59,8 @@ mem_count=$(grep -c '^nizam_process_mem_rss_bytes' "$TMP" || true)
 mv "$TMP" "$OUT"
 chmod 644 "$OUT"
 
-log_info "wrote processes.prom (cpu_top=${cpu_count}, mem_top=${mem_count})"
+if [[ $cpu_count -eq 0 ]]; then
+    log_warn "wrote processes.prom — ps produced no cpu output"
+else
+    log_info "wrote processes.prom (cpu_top=${cpu_count}, mem_top=${mem_count})"
+fi
