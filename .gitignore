@@ -1,4 +1,5 @@
-*.env
+nizam-dotfiles.env
 logs/*.log
+logs/*.log.*
 logs/*.gz
 !logs/.gitkeep
