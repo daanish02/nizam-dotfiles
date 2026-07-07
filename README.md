@@ -56,7 +56,7 @@ Discord webhooks are read from `secrets/nizam-dotfiles.env`. To configure:
 
 ```bash
 cp secrets/nizam-dotfiles.env.example secrets/nizam-dotfiles.env  # enter secrets
-bash scripts/setup-alerts.sh
+bash scripts/setup/setup-alerts.sh
 ```
 
 ## Boundary
@@ -74,6 +74,6 @@ Dashboard, alerts, and operational reference: [SYSTEM DASHBOARD](docs/001-system
 
 | Repo | Handles |
 |---|---|
-| nizam-dotfiles | The machine — shell, security, monitoring (this repo) |
+| nizam-dotfiles | The machine — shell, security, monitoring |
 | nizam-os | The software — agents, services, databases |
 | nizam-vault | The knowledge — notes, references, decisions |
