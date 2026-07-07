@@ -11,12 +11,17 @@ OUT="/var/lib/prometheus/node-exporter/services.prom"
 TMP=$(mktemp)
 
 SERVICES=(
-    prometheus
-    grafana-server
+    cron
+    ssh.socket
+    ufw
     fail2ban
+    unattended-upgrades
+    tailscaled
+    prometheus
     prometheus-node-exporter
     loki
     promtail
+    grafana-server
     metrics-security.timer
     metrics-processes.timer
     metrics-disk.timer
