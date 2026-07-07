@@ -1982,13 +1982,13 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(nizam_service_up) / count(nizam_service_up) * 100",
+          "expr": "sum(avg_over_time(nizam_service_up[24h])) / count(nizam_service_up) * 100",
           "instant": true,
           "legendFormat": "",
           "refId": "A"
         }
       ],
-      "title": "Availability",
+      "title": "Availability (24h)",
       "transparent": true,
       "type": "stat"
     },
@@ -2461,12 +2461,14 @@
       "id": 25,
       "options": {
         "dedupStrategy": "none",
+        "detailsMode": "inline",
+        "displayedFields": [],
         "enableInfiniteScrolling": false,
-        "enableLogDetails": true,
+        "enableLogDetails": false,
         "prettifyLogMessage": true,
         "showCommonLabels": false,
         "showControls": false,
-        "showFieldSelector": false,
+        "showFieldSelector": true,
         "showLabels": false,
         "showLevel": true,
         "showTime": false,
@@ -2482,8 +2484,11 @@
             "type": "loki",
             "uid": "${loki_datasource}"
           },
+          "direction": "backward",
+          "editorMode": "code",
           "expr": "{job=\"nizam-dotfiles\"} | json",
           "legendFormat": "",
+          "queryType": "range",
           "refId": "A"
         }
       ],
