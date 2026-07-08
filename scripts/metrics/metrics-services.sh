@@ -26,11 +26,11 @@ SERVICES=(
     metrics-processes.timer
     metrics-disk.timer
     metrics-sessions.timer
-    metrics-services.timer
+    metrics-dotfiles-services.timer
 )
 
 {
-echo "# HELP nizam_service_up Service active state (1=active, 0=inactive/failed)"
+echo "# HELP nizam_service_up Service is active (1) or not (0)"
 echo "# TYPE nizam_service_up gauge"
 
 up_count=0
@@ -42,7 +42,7 @@ for svc in "${SERVICES[@]}"; do
         state=0
     fi
     label="${svc//./_}"
-    echo "nizam_service_up{service=\"${label}\"} ${state}"
+    echo "nizam_service_up{service=\"${label}\",source=\"dotfiles\"} ${state}"
 done
 } > "$TMP"
 
