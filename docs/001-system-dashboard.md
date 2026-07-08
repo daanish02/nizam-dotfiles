@@ -33,6 +33,8 @@ Timers are staggered by second offset so no two collectors fire simultaneously.
 
 All five write Prometheus textfiles to `/var/lib/prometheus/node-exporter/`. node-exporter exposes them; Prometheus scrapes node-exporter. Script logs are tailed by Promtail and shipped to Loki.
 
+`nizam_service_up` carries a `source="dotfiles"` label to distinguish it from the same metric written by nizam-os. Grafana queries filter on this label.
+
 ---
 
 ## Dashboard import
@@ -41,7 +43,27 @@ Grafana, Prometheus, Loki, and Promtail are installed in `docs/001-machine-setup
 
 1. Connections → Data Sources → Add → **Prometheus** — URL: `http://localhost:9090`, UID: `nizam-prometheus` → Save & Test
 2. Connections → Data Sources → Add → **Loki** — URL: `http://localhost:3100`, UID: `nizam-loki` → Save & Test
-3. Dashboards → New → Import → upload `grafana/001-system-dashboard.json`
+3. Push the dashboard:
+
+```bash
+bash scripts/grafana/push-dashboard.sh grafana/001-system-dashboard.json
+```
+
+---
+
+## Grafana scripts
+
+Two utility scripts for syncing dashboards between the repo and Grafana. Both read `GRAFANA_URL` and `GRAFANA_AUTH` from `secrets/nizam-dotfiles.env`, with `http://localhost:3000` / `admin:admin` as fallback defaults.
+
+```bash
+# push local JSON to Grafana
+bash scripts/grafana/push-dashboard.sh grafana/001-system-dashboard.json
+
+# pull from Grafana by UID (find UID in the dashboard URL: /d/<uid>/...)
+bash scripts/grafana/pull-dashboard.sh <uid> grafana/001-system-dashboard.json
+```
+
+After pulling, commit the updated JSON to keep the repo in sync.
 
 ---
 
@@ -93,7 +115,7 @@ Both panels use instant queries to avoid range queries returning >5 series when 
 
 ### Security & availability tiles
 
-All-time counters except Currently Banned and Active SSH Sessions, which reflect live state. Availability reflects rolling 24h uptime — can be below 100% even if all services are currently up.
+All-time counters except Currently Banned and Active SSH Sessions, which reflect live state. Availability reflects rolling 7d uptime — can be below 100% even if all services are currently up.
 
 | Tile | Metric |
 |---|---|
@@ -102,7 +124,7 @@ All-time counters except Currently Banned and Active SSH Sessions, which reflect
 | Currently Banned | IPs currently blocked by fail2ban |
 | UFW Blocked Packets | Total packets dropped by the firewall |
 | Active SSH Sessions | Count of currently active SSH sessions; alert fires at >1 |
-| Availability (24h) | Rolling 24h uptime across all tracked services |
+| Availability (7d) | Rolling 7d uptime across all tracked services |
 
 High totals on a public-facing VPS are expected noise. Currently Banned rises and falls as bans expire.
 
@@ -112,7 +134,7 @@ Table of SSH sessions over a 24 hour window — Prometheus returns the maximum v
 
 ### Service up/down
 
-State timeline per service — gaps are immediately visible.
+State timeline per service — gaps are immediately visible. Shows only dotfiles-layer services (`source="dotfiles"`).
 
 ### Security events timeline
 
@@ -147,15 +169,30 @@ Unified alerting via Grafana → Discord. Two severity levels, two contact point
 
 Webhooks are read from `secrets/nizam-dotfiles.env` at run time.
 
+### Alert message format
+
+Discord messages use a compact custom template (`nizam-discord`), pushed by `setup-alerts.sh`:
+
+```
+[CRITICAL] CPU High Critical
+CPU usage is above 90% | value: 94.2
+Firing since: Jul 8 18:04 UTC
+
+Dashboard: http://localhost:3000/d/nizam-system
+```
+
+Multiple alerts firing at once are listed sequentially above the dashboard link.
+
 ### Setup via script (recommended)
 
 ```bash
 cp ~/nizam-dotfiles/secrets/nizam-dotfiles.env.example ~/nizam-dotfiles/secrets/nizam-dotfiles.env
 # fill secrets
+bash ~/nizam-dotfiles/scripts/setup/setup-grafana.sh
 bash ~/nizam-dotfiles/scripts/setup/setup-alerts.sh
 ```
 
-The script is idempotent — safe to re-run. It deletes and recreates all rules in `nizam-vps` group on each run.
+`setup-grafana.sh` provisions datasources (`nizam-prometheus`, `nizam-loki`) and pushes the dashboard — run it first. Both scripts are idempotent and safe to re-run. `setup-alerts.sh` deletes and recreates all rules in the `nizam-system` group on each run.
 
 ### Setup via Grafana UI
 
@@ -201,7 +238,7 @@ Alerting → Alert rules → + New alert rule. For each rule, set folder `nizam-
 | Memory High Critical | same as above | IS ABOVE 90 | critical | 5m |
 | Disk Full Warning | `(1 - (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"})) * 100` | IS ABOVE 70 | warning | 1m |
 | Disk Full Critical | same as above | IS ABOVE 90 | critical | 1m |
-| Service Down | `min(nizam_service_up)` | IS EQUAL TO 0 | critical | 2m |
+| Service Down | `min(nizam_service_up{source="dotfiles"})` | IS EQUAL TO 0 | critical | 2m |
 | SSH Session Count | `nizam_ssh_active_sessions` | IS ABOVE 1 | critical | 30s |
 
 ### Routing
@@ -242,7 +279,7 @@ All rules live in folder `nizam-alerts`, group `nizam-vps`. Each threshold is a 
 ### Check collector status
 
 ```bash
-sudo systemctl status metrics-security.timer metrics-processes.timer metrics-disk.timer metrics-sessions.timer metrics-services.timer --no-pager
+sudo systemctl status metrics-security.timer metrics-processes.timer metrics-disk.timer metrics-sessions.timer metrics-dotfiles-services.timer --no-pager
 ```
 
 Trigger manually and inspect output:
@@ -252,7 +289,7 @@ sudo systemctl start metrics-security.service && cat /var/lib/prometheus/node-ex
 sudo systemctl start metrics-processes.service && cat /var/lib/prometheus/node-exporter/processes.prom
 sudo systemctl start metrics-disk.service && cat /var/lib/prometheus/node-exporter/disk-dirs.prom
 sudo systemctl start metrics-sessions.service && cat /var/lib/prometheus/node-exporter/sessions.prom
-sudo systemctl start metrics-services.service && cat /var/lib/prometheus/node-exporter/services.prom
+sudo systemctl start metrics-dotfiles-services.service && cat /var/lib/prometheus/node-exporter/services.prom
 ```
 
 Confirm Prometheus is scraping:
@@ -271,9 +308,11 @@ sudo journalctl -u metrics-disk.service -n 10 --no-pager
 
 ### Script logs
 
-All metric scripts write structured JSON to `~/nizam-dotfiles/logs/scripts.log`.
+All metric scripts write structured JSON to `~/nizam-dotfiles/logs/scripts.log` via `scripts/shared/_log.sh`.
 
 Format: `{"ts":"...", "level":"INFO", "script":"script-name", "msg":"..."}`
+
+When running a script manually in a terminal, output is colored: green for INFO, yellow for WARN, red for ERROR. When run by systemd (no TTY), plain JSON goes to stdout and is captured by the journal.
 
 ```bash
 tail -f ~/nizam-dotfiles/logs/scripts.log
@@ -294,8 +333,8 @@ ls -la \
   /etc/systemd/system/metrics-disk.timer \
   /etc/systemd/system/metrics-sessions.service \
   /etc/systemd/system/metrics-sessions.timer \
-  /etc/systemd/system/metrics-services.service \
-  /etc/systemd/system/metrics-services.timer
+  /etc/systemd/system/metrics-dotfiles-services.service \
+  /etc/systemd/system/metrics-dotfiles-services.timer
 ```
 
 All entries must point to `/home/vazir/nizam-dotfiles/systemd/...`. Re-run `sudo bash scripts/setup/install-symlinks.sh` if any symlink is missing or stale.
@@ -310,3 +349,5 @@ All entries must point to `/home/vazir/nizam-dotfiles/systemd/...`. Re-run `sudo
 | Symlinks missing after git pull | `sudo bash scripts/setup/install-symlinks.sh` |
 | logrotate errors | `sudo logrotate -d /etc/logrotate.d/nizam-dotfiles` — confirm owner is root |
 | Prometheus not showing nizam metrics | `curl -s http://localhost:9100/metrics \| grep nizam_` |
+| Stale series in Grafana after rename | Enable Prometheus admin API (`--web.enable-admin-api`), then `POST /api/v1/admin/tsdb/delete_series?match[]=<metric>{<old_label>}` and `POST /api/v1/admin/tsdb/clean_tombstones` |
+| Alert rules show `DatasourceError` | Datasource UID mismatch — delete and recreate datasource with correct UID (`nizam-prometheus` / `nizam-loki`) via Grafana API or UI, then re-run `setup-alerts.sh` |
