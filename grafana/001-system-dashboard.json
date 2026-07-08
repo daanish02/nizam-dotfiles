@@ -1923,7 +1923,7 @@
       },
       "fieldConfig": {
         "defaults": {
-          "decimals": 1,
+          "decimals": 3,
           "displayName": "Availability",
           "max": 100,
           "min": 0,
