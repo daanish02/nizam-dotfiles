@@ -4,7 +4,7 @@
 #   sudo bash scripts/install.sh
 set -euo pipefail
 
-DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
+DOTFILES="$(cd "$(dirname "$0")/../.." && pwd)"
 
 # Systemd system units
 ln -sf "$DOTFILES/systemd/metrics-security.service"  /etc/systemd/system/metrics-security.service
