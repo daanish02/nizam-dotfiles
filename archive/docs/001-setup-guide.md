@@ -179,7 +179,7 @@ Install Loki and Promtail configs, then start both:
 
 ```bash
 # Configs, systemd symlinks, promtail override (runs as root, uses config.yaml)
-sudo bash ~/nizam-dotfiles/scripts/setup/install.sh
+sudo bash ~/nizam-dotfiles/scripts/setup/install-symlinks.sh
 sudo systemctl enable --now loki promtail
 
 curl -s http://localhost:3100/ready  # → ready
@@ -201,7 +201,7 @@ sudo systemctl enable --now \
   metrics-services.timer
 ```
 
-`install.sh` (already run above) symlinks all systemd units from `systemd/` into `/etc/systemd/system/`. Re-run after pulling changes that touch `systemd/` or `config/`.
+`install-symlinks.sh` (already run above) symlinks all systemd units from `systemd/` into `/etc/systemd/system/`. Re-run after pulling changes that touch `systemd/` or `config/`.
 
 ---
 
