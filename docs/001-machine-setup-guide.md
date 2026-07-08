@@ -89,7 +89,7 @@ Takes 5–10 minutes. The script is idempotent — if it fails partway, fix the 
 3. Packages — zsh, fzf, fd-find, zoxide, ripgrep, inotify-tools, jq, git, btop, eza, bat
 4. Shell setup — symlinks `.zshrc`, `.p10k.zsh`, `.zsh-aliases`, `.gitconfig`; sets zsh as default shell
 5. Monitoring stack — Prometheus, node-exporter, Grafana, Loki, Promtail; Grafana memory tuning
-6. Wires symlinks — calls `install.sh` (systemd units, logrotate, Loki/Promtail configs)
+6. Wires symlinks — calls `install-symlinks.sh` (systemd units, logrotate, Loki/Promtail configs)
 7. Enables metric timers — all collectors active
 8. Installs Tailscale binary (does not run `tailscale up`)
 

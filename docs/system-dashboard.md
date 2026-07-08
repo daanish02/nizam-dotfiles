@@ -298,7 +298,7 @@ ls -la \
   /etc/systemd/system/metrics-services.timer
 ```
 
-All entries must point to `/home/vazir/nizam-dotfiles/systemd/...`. Re-run `sudo bash scripts/setup/install.sh` if any symlink is missing or stale.
+All entries must point to `/home/vazir/nizam-dotfiles/systemd/...`. Re-run `sudo bash scripts/setup/install-symlinks.sh` if any symlink is missing or stale.
 
 ### Common fixes
 
@@ -307,6 +307,6 @@ All entries must point to `/home/vazir/nizam-dotfiles/systemd/...`. Re-run `sudo
 | `.prom` file not updating | `sudo systemctl start metrics-<name>.service && sudo journalctl -u metrics-<name>.service -n 5 --no-pager` |
 | Grafana panel shows >5 processes | Stale Prometheus series — wait 5 min for the lookback window to expire |
 | `du` or `ps` at 100% in CPU panel | EXCLUDE pattern in `metrics-processes.sh` missing `du` or `ps` |
-| Symlinks missing after git pull | `sudo bash scripts/setup/install.sh` |
+| Symlinks missing after git pull | `sudo bash scripts/setup/install-symlinks.sh` |
 | logrotate errors | `sudo logrotate -d /etc/logrotate.d/nizam-dotfiles` — confirm owner is root |
 | Prometheus not showing nizam metrics | `curl -s http://localhost:9100/metrics \| grep nizam_` |
