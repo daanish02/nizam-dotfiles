@@ -1,0 +1,9 @@
+[Unit]
+Description=Run metrics-dotfiles-services every minute
+
+[Timer]
+OnCalendar=*:*:30
+AccuracySec=1s
+
+[Install]
+WantedBy=timers.target

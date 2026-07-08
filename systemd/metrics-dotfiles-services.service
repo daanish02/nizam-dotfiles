@@ -1,0 +1,8 @@
+[Unit]
+Description=Collect dotfiles service availability metrics
+
+[Service]
+Type=oneshot
+ExecStart=/home/vazir/nizam-dotfiles/scripts/metrics/metrics-services.sh
+User=root
+Environment=HOME=/home/vazir
