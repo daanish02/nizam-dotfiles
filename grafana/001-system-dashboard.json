@@ -226,7 +226,7 @@
           "refId": "A"
         }
       ],
-      "title": "RAM Usage",
+      "title": "Memory Usage",
       "transparent": true,
       "type": "stat"
     },
