@@ -2,7 +2,7 @@
 
 **What this builds:** A hardened, monitored Ubuntu 24.04 VPS with a consistent shell environment, security baseline, and live Grafana dashboard — ready for nizam-os to install on top.
 
-**Reference:** [docs/001-system-dashboard.md](system-dashboard.md) for dashboard panels, alert rules, and operational reference.  
+**Reference:** [docs/001-system-dashboard.md](001-system-dashboard.md) for dashboard panels, alert rules, and operational reference.  
 **Next:** nizam-os [docs/guides/001-foundation-guide.md](../../nizam-os/docs/guides/001-foundation.md)
 
 ---
@@ -263,7 +263,7 @@ Open Grafana at `http://<tailscale-ip>:3000` (default login: admin/admin — cha
 
 4. Alerting → Contact points → Add — create `nizam-warn` and `nizam-crit` with your Discord webhook URLs
 5. Alerting → Notification policies — route `severity=warning` to `nizam-warn`, `severity=critical` to `nizam-crit`
-6. Import alert rules from `grafana/alert-rules.json` if available, or add manually per [001-system-dashboard.md](system-dashboard.md#alert-rules)
+6. Import alert rules from `grafana/alert-rules.json` if available, or add manually per [001-system-dashboard.md](001-system-dashboard.md#alert-rules)
 
 ---
 
