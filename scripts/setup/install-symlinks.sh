@@ -35,9 +35,9 @@ if [[ -d /etc/loki ]]; then
     echo "  installed loki config"
 fi
 if [[ -d /etc/promtail ]]; then
-    cp "$DOTFILES/config/promtail.yaml" /etc/promtail/config.yaml
+    cp "$DOTFILES/config/promtail.yaml" /etc/promtail/promtail-nizam-dotfiles.yaml
     echo "  installed promtail config"
-    # Override promtail service: run as root (home dir is 750) and use .yaml extension.
+    # Override promtail service: run as root (home dir is 750) and point to named config.
     # The upstream unit hardcodes config.yml — clear ExecStart first, then set new path.
     mkdir -p /etc/systemd/system/promtail.service.d
     cat > /etc/systemd/system/promtail.service.d/override.conf << 'EOF'
@@ -45,7 +45,7 @@ if [[ -d /etc/promtail ]]; then
 User=root
 Group=root
 ExecStart=
-ExecStart=/usr/bin/promtail -config.file /etc/promtail/config.yaml
+ExecStart=/usr/bin/promtail -config.file /etc/promtail/promtail-nizam-dotfiles.yaml
 EOF
     echo "  installed promtail service override"
 fi
