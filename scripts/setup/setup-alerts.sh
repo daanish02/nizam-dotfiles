@@ -46,26 +46,26 @@ gapi PUT /api/v1/provisioning/contact-points/nizam-warn \
     "$(jq -n --arg url "$DISCORD_WEBHOOK_WARNING" '{
         name: "nizam-warn",
         type: "discord",
-        settings: { url: $url, message: "{{ template \"discord.default.message\" . }}" }
+        settings: { url: $url, message: "{{ template \"nizam-discord\" . }}" }
     }')" > /dev/null 2>&1 || \
 gapi POST /api/v1/provisioning/contact-points \
     "$(jq -n --arg url "$DISCORD_WEBHOOK_WARNING" '{
         name: "nizam-warn",
         type: "discord",
-        settings: { url: $url, message: "{{ template \"discord.default.message\" . }}" }
+        settings: { url: $url, message: "{{ template \"nizam-discord\" . }}" }
     }')" > /dev/null
 
 gapi PUT /api/v1/provisioning/contact-points/nizam-crit \
     "$(jq -n --arg url "$DISCORD_WEBHOOK_CRITICAL" '{
         name: "nizam-crit",
         type: "discord",
-        settings: { url: $url, message: "{{ template \"discord.default.message\" . }}" }
+        settings: { url: $url, message: "{{ template \"nizam-discord\" . }}" }
     }')" > /dev/null 2>&1 || \
 gapi POST /api/v1/provisioning/contact-points \
     "$(jq -n --arg url "$DISCORD_WEBHOOK_CRITICAL" '{
         name: "nizam-crit",
         type: "discord",
-        settings: { url: $url, message: "{{ template \"discord.default.message\" . }}" }
+        settings: { url: $url, message: "{{ template \"nizam-discord\" . }}" }
     }')" > /dev/null
 
 _ok "contact points ok"
