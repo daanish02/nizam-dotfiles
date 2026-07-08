@@ -124,27 +124,19 @@ sudo ufw status  # expected: no rule for port 22
 
 ## Step 5 — Grafana setup
 
-Open Grafana at `http://<tailscale-ip>:3000` **(default login: admin/admin — change immediately)**.
+Open Grafana at `http://<tailscale-ip>:3000` and change the default `admin/admin` password immediately.
 
-**Datasources:**
+**Provision datasources and dashboard:**
 
-1. Connections → Data Sources → Add → **Prometheus**
-   - URL: `http://localhost:9090`
-   - UID: `nizam-prometheus`
-   - → Save & Test
+```bash
+bash ~/nizam-dotfiles/scripts/setup/setup-grafana.sh
+```
 
-2. Connections → Data Sources → Add → **Loki**
-   - URL: `http://localhost:3100`
-   - UID: `nizam-loki`
-   - → Save & Test
-
-**Dashboard:**
-
-3. Dashboards → New → Import → upload `grafana/001-system-dashboard.json`
+This creates the Prometheus (`nizam-prometheus`) and Loki (`nizam-loki`) datasources with the correct UIDs and pushes the system dashboard. Safe to re-run.
 
 **Alerts:**
 
-4. Fill `DISCORD_WEBHOOK_WARNING` and `DISCORD_WEBHOOK_CRITICAL` in `secrets/nizam-dotfiles.env`, then:
+Fill `DISCORD_WEBHOOK_WARNING` and `DISCORD_WEBHOOK_CRITICAL` in `secrets/nizam-dotfiles.env`, then:
 
 ```bash
 bash ~/nizam-dotfiles/scripts/setup/setup-alerts.sh
