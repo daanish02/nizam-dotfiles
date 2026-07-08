@@ -15,8 +15,8 @@ ln -sf "$DOTFILES/systemd/metrics-disk.service"      /etc/systemd/system/metrics
 ln -sf "$DOTFILES/systemd/metrics-disk.timer"        /etc/systemd/system/metrics-disk.timer
 ln -sf "$DOTFILES/systemd/metrics-sessions.service"  /etc/systemd/system/metrics-sessions.service
 ln -sf "$DOTFILES/systemd/metrics-sessions.timer"    /etc/systemd/system/metrics-sessions.timer
-ln -sf "$DOTFILES/systemd/metrics-services.service"  /etc/systemd/system/metrics-services.service
-ln -sf "$DOTFILES/systemd/metrics-services.timer"    /etc/systemd/system/metrics-services.timer
+ln -sf "$DOTFILES/systemd/metrics-dotfiles-services.service"  /etc/systemd/system/metrics-dotfiles-services.service
+ln -sf "$DOTFILES/systemd/metrics-dotfiles-services.timer"    /etc/systemd/system/metrics-dotfiles-services.timer
 
 systemctl daemon-reload
 echo "  reloaded systemd daemon"
@@ -61,5 +61,5 @@ ls -la \
     /etc/systemd/system/metrics-disk.timer \
     /etc/systemd/system/metrics-sessions.service \
     /etc/systemd/system/metrics-sessions.timer \
-    /etc/systemd/system/metrics-services.service \
-    /etc/systemd/system/metrics-services.timer
+    /etc/systemd/system/metrics-dotfiles-services.service \
+    /etc/systemd/system/metrics-dotfiles-services.timer
