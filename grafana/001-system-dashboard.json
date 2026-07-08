@@ -1567,7 +1567,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "nizam_service_up",
+          "expr": "nizam_service_up{source=\"dotfiles\"}",
           "legendFormat": "{{service}}",
           "refId": "A"
         }
@@ -2368,8 +2368,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "warn",
-              "scope": "series"
+              "options": "WARN"
             },
             "properties": [
               {
