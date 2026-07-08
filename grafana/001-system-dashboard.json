@@ -487,7 +487,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(nizam_service_up) / count(nizam_service_up) * 100",
+          "expr": "avg(nizam_service_up{source=\"dotfiles\"}) * 100",
           "instant": true,
           "legendFormat": "",
           "refId": "A"
@@ -1984,7 +1984,7 @@
           "refId": "A"
         }
       ],
-      "title": "Availability (24h)",
+      "title": "Availability (7d)",
       "transparent": true,
       "type": "stat"
     },
