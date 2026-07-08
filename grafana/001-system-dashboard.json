@@ -1978,7 +1978,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(avg_over_time(nizam_service_up[24h])) / count(nizam_service_up) * 100",
+          "expr": "avg(avg_over_time(nizam_service_up{source=\"dotfiles\"}[7d])) * 100",
           "instant": true,
           "legendFormat": "",
           "refId": "A"
