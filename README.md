@@ -27,7 +27,7 @@ nizam-dotfiles/
 
 ## Symlinks
 
-`scripts/install.sh` wires everything into place. Re-run after pulling changes.
+`scripts/setup/install-symlinks.sh` wires everything into place. Re-run after pulling changes.
 
 | Source | Target |
 |--------|--------|
@@ -48,7 +48,7 @@ nizam-dotfiles/
 
 `config/logrotate.nizam-dotfiles` is copied (not symlinked) to `/etc/logrotate.d/nizam-dotfiles` — logrotate rejects config files not owned by root.
 
-`config/promtail.yaml` is copied to `/etc/promtail/config.yaml`. `install.sh` also writes a systemd override to run Promtail as root (required — `/home/vazir/` has 750 permissions).
+`config/promtail.yaml` is copied to `/etc/promtail/config.yaml`. `install-symlinks.sh` also writes a systemd override to run Promtail as root (required — `/home/vazir/` has 750 permissions).
 
 ## Alerts
 
