@@ -1,3 +1,4 @@
+archive/
 nizam-dotfiles.env
 logs/*.log
 logs/*.log.*
