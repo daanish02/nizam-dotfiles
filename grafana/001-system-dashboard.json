@@ -2467,6 +2467,8 @@
         "showLabels": false,
         "showLevel": true,
         "showTime": false,
+        "fillOpacity": 100,
+        "lineWidth": 4,
         "sortOrder": "Descending",
         "timestampResolution": "ms",
         "unwrappedColumns": false,
