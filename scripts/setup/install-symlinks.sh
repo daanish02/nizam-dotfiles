@@ -63,6 +63,3 @@ ls -la \
     /etc/systemd/system/metrics-sessions.timer \
     /etc/systemd/system/metrics-services.service \
     /etc/systemd/system/metrics-services.timer
-
-echo ""
-echo "Next: sudo systemctl enable --now metrics-security.timer metrics-processes.timer metrics-disk.timer metrics-sessions.timer metrics-services.timer"
