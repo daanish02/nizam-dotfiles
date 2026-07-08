@@ -116,7 +116,7 @@ else
 fi
 
 # Done
-printf "\n${BLD}${CYN}========================================================${RST}\n"
+printf "\n${BLD}${CYN}====================================================================================${RST}\n"
 printf "${BLD}${GRN}001-machine-setup.sh complete.${RST}\n"
 printf "\n${BLD}Manual steps remaining:${RST}\n"
 printf "  1. Open a new shell (zsh + zinit bootstrap on first launch)\n"
@@ -129,4 +129,4 @@ printf "     - Add Prometheus datasource (URL: http://localhost:9090, UID: nizam
 printf "     - Add Loki datasource (URL: http://localhost:3100, UID: nizam-loki)\n"
 printf "     - Import grafana/001-system-dashboard.json\n"
 printf "     - Run: bash ~/nizam-dotfiles/scripts/setup/setup-alerts.sh\n"
-printf "${BLD}${CYN}========================================================${RST}\n"
+printf "${BLD}${CYN}====================================================================================${RST}\n"
