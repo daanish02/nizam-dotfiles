@@ -4,18 +4,21 @@
 # Override: GRAFANA_URL (default: http://localhost:3000), GRAFANA_AUTH (default: admin:admin)
 set -euo pipefail
 
-SCRIPT_NAME="setup-alerts"
-source "$(dirname "$0")/../shared/_log.sh"
+BLD='\033[1m'; CYN='\033[36m'; GRN='\033[32m'; YLW='\033[33m'; RED='\033[31m'; RST='\033[0m'
+_step() { printf "\n${BLD}${CYN}==> %s${RST}\n" "$*"; }
+_ok()   { printf "${GRN}  %s${RST}\n" "$*"; }
+_note() { printf "${YLW}  %s${RST}\n" "$*"; }
+_err()  { printf "${RED}  ERROR: %s${RST}\n" "$*" >&2; }
 
 GRAFANA_URL="${GRAFANA_URL:-http://localhost:3000}"
 GRAFANA_AUTH="${GRAFANA_AUTH:-admin:admin}"
 
-DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
+DOTFILES="$(cd "$(dirname "$0")/../.." && pwd)"
 SECRETS_FILE="$DOTFILES/secrets/nizam-dotfiles.env"
 
 if [[ ! -f "$SECRETS_FILE" ]]; then
-    log_error "secrets file not found: $SECRETS_FILE"
-    log_error "copy secrets/nizam-dotfiles.env.example → secrets/nizam-dotfiles.env and fill in values"
+    _err "secrets file not found: $SECRETS_FILE"
+    _err "copy secrets/nizam-dotfiles.env.example → secrets/nizam-dotfiles.env and fill in values"
     exit 1
 fi
 
@@ -37,7 +40,7 @@ gapi() {
 
 # Contact points
 
-log_info "creating contact points"
+_ok "creating contact points"
 
 gapi PUT /api/v1/provisioning/contact-points/nizam-warn \
     "$(jq -n --arg url "$DISCORD_WEBHOOK_WARNING" '{
@@ -65,11 +68,11 @@ gapi POST /api/v1/provisioning/contact-points \
         settings: { url: $url, message: "{{ template \"discord.default.message\" . }}" }
     }')" > /dev/null
 
-log_info "contact points ok"
+_ok "contact points ok"
 
 # Notification policy
 
-log_info "setting notification policy"
+_ok "setting notification policy"
 
 gapi PUT /api/v1/provisioning/policies '{
   "receiver": "nizam-crit",
@@ -93,7 +96,7 @@ gapi PUT /api/v1/provisioning/policies '{
   ]
 }' > /dev/null
 
-log_info "notification policy ok"
+_ok "notification policy ok"
 
 # Alert folder
 
@@ -106,9 +109,9 @@ print(match['uid'] if match else '')
 
 if [[ -z "$FOLDER_UID" ]]; then
     FOLDER_UID=$(gapi POST /api/folders '{"uid":"nizam-alerts","title":"nizam-alerts"}' | python3 -c "import json,sys; print(json.load(sys.stdin)['uid'])")
-    log_info "created folder nizam-alerts (uid=$FOLDER_UID)"
+    _ok "created folder nizam-alerts (uid=$FOLDER_UID)"
 else
-    log_info "folder nizam-alerts exists (uid=$FOLDER_UID)"
+    _ok "folder nizam-alerts exists (uid=$FOLDER_UID)"
 fi
 
 # Helper: build a classic-condition alert rule 
@@ -170,7 +173,7 @@ push_rule() {
     local rule="$1"
     local title; title=$(echo "$rule" | python3 -c "import json,sys; print(json.load(sys.stdin)['title'])")
     gapi POST /api/v1/provisioning/alert-rules "$rule" > /dev/null
-    log_info "rule created: $title"
+    _ok "rule created: $title"
 }
 
 # Delete existing rules in group so re-runs are idempotent
@@ -184,7 +187,7 @@ for r in rules:
 for uid in $existing; do
     gapi DELETE "/api/v1/provisioning/alert-rules/$uid" > /dev/null
 done
-[[ -n "$existing" ]] && log_info "cleared existing nizam-system rules"
+[[ -n "$existing" ]] && _ok "cleared existing nizam-system rules"
 
 # CPU
 
@@ -234,4 +237,4 @@ push_rule "$(make_rule \
     "SSH Session Count" "nizam_ssh_active_sessions" gt 1 \
     critical "30s" "Multiple SSH sessions" "More than one simultaneous SSH session detected")"
 
-log_info "setup complete — 8 rules active"
+_ok "setup complete — 8 rules active"
