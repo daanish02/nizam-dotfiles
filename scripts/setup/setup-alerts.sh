@@ -38,6 +38,21 @@ gapi() {
     fi
 }
 
+# Notification template
+
+_ok "pushing notification template"
+
+DISCORD_TEMPLATE='{{ range .Alerts }}[{{ .Labels.severity | toUpper }}] {{ .Labels.rulename }}
+{{ .Annotations.description }}{{ range $k, $v := .Values }}{{ if eq $k "A" }} | value: {{ printf "%.1f" $v.Value }}{{ end }}{{ end }}
+Firing since: {{ .StartsAt.Format "Jan 2 15:04 UTC" }}
+
+{{ end }}Dashboard: '"${GRAFANA_URL}"'/d/nizam-system'
+
+gapi PUT /api/v1/provisioning/templates/nizam-discord \
+    "$(jq -n --arg tmpl "$DISCORD_TEMPLATE" '{ name: "nizam-discord", template: $tmpl }')" > /dev/null
+
+_ok "template ok"
+
 # Contact points
 
 _ok "creating contact points"
