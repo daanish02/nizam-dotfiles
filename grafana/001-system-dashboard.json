@@ -2464,7 +2464,7 @@
         "prettifyLogMessage": true,
         "showCommonLabels": false,
         "showControls": false,
-        "showFieldSelector": true,
+        "showFieldSelector": false,
         "showLabels": false,
         "showLevel": true,
         "showTime": false,
