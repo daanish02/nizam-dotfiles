@@ -19,10 +19,10 @@ if [[ $# -ne 2 ]]; then
     exit 1
 fi
 
-UID="$1"
+DASH_UID="$1"
 FILE="$2"
 
-curl -sf -u "$GRAFANA_AUTH" "$GRAFANA_URL/api/dashboards/uid/$UID" \
+curl -sf -u "$GRAFANA_AUTH" "$GRAFANA_URL/api/dashboards/uid/$DASH_UID" \
     | python3 -c "
 import json, sys
 r = json.load(sys.stdin)
@@ -30,5 +30,5 @@ dash = r['dashboard']
 with open('$FILE', 'w') as f:
     json.dump(dash, f, indent=2)
     f.write('\n')
-print(f'pulled: uid=$UID v{dash.get(\"version\",\"?\")} → $FILE')
+print(f'pulled: uid=$DASH_UID v{dash.get(\"version\",\"?\")} → $FILE')
 "
