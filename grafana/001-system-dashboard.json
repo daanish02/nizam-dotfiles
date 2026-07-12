@@ -19,6 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "id": 2366937212657664,
   "liveNow": false,
   "panels": [
     {
@@ -2368,13 +2369,14 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "WARN"
+              "options": "warning",
+              "scope": "series"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "orange",
+                  "fixedColor": "yellow",
                   "mode": "fixed"
                 }
               }
@@ -2460,15 +2462,15 @@
         "displayedFields": [],
         "enableInfiniteScrolling": false,
         "enableLogDetails": false,
-        "prettifyLogMessage": true,
+        "fillOpacity": 100,
+        "lineWidth": 4,
+        "prettifyLogMessage": false,
         "showCommonLabels": false,
         "showControls": false,
         "showFieldSelector": false,
         "showLabels": false,
         "showLevel": true,
         "showTime": false,
-        "fillOpacity": 100,
-        "lineWidth": 4,
         "sortOrder": "Descending",
         "timestampResolution": "ms",
         "unwrappedColumns": false,
@@ -2561,5 +2563,6 @@
   },
   "timezone": "browser",
   "title": "Nizam \u2014 System",
-  "uid": "nizam-system"
+  "uid": "nizam-system",
+  "version": 56
 }
