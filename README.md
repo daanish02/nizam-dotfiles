@@ -21,7 +21,7 @@ nizam-dotfiles/
 ├── config/     logrotate, loki, promtail configs
 ├── grafana/    system dashboard JSON
 ├── secrets/    discord webhook URLs
-├── docs/       vision, setup guide, and dashboard reference
+├── docs/       vision, runbook, and dashboard reference
 └── logs/       runtime script output
 ```
 
@@ -65,8 +65,8 @@ Would this file belong on this server even without **Nizam** running? Yes → he
 
 ## Setup
 
-See [MACHINE SETUP GUIDE](docs/001-machine-setup-guide.md) to go from a fresh VPS to a ready machine.  
-Dashboard, alerts, and operational reference: [SYSTEM DASHBOARD](docs/001-system-dashboard.md)
+See [RUNBOOK → Machine setup](docs/RUNBOOK.md#machine-setup-fresh-vps) to go from a fresh VPS to a ready machine.  
+Dashboard, alerts, and metric reference: [DASHBOARD](docs/DASHBOARD.md)
 
 ---
 

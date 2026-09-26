@@ -1,13 +1,19 @@
-# Machine Setup — Guide
+# Runbook — nizam-dotfiles
 
-**What this builds:** A hardened, monitored Ubuntu 24.04 VPS — SSH hardening, UFW, fail2ban, zsh, Prometheus, Grafana, Loki, Promtail, metric collectors — ready for **nizam-os** to install on top.
+Operational procedures for the machine layer. Dashboard, alerts, and metric reference live in [DASHBOARD](DASHBOARD.md).
 
-**Dashboard reference:** [System Dashboard](001-system-dashboard.md)  
-**Next phase:** [Nizam OS — Phase 1 Foundation](../../nizam-os/docs/guides/001-foundation-guide.md)
+**Contents**
+- [Machine setup (fresh VPS)](#machine-setup-fresh-vps)
 
 ---
 
-## Prerequisites
+## Machine setup (fresh VPS)
+
+**What this builds:** A hardened, monitored Ubuntu 24.04 VPS — SSH hardening, UFW, fail2ban, zsh, Prometheus, Grafana, Loki, Promtail, metric collectors — ready for **nizam-os** to install on top.
+
+**Next phase:** [Nizam OS — rebuild plan](../../nizam-os/export/00-START-HERE.md)
+
+### Prerequisites
 
 - [ ] Fresh Ubuntu 24.04 VPS (Hostinger KVM2 or equivalent) with root SSH access
 - [ ] SSH public key available on your local machine
@@ -16,7 +22,7 @@
 
 ---
 
-## Step 1 — Root bootstrap (manual)
+### Step 1 — Root bootstrap (manual)
 
 Run as root on the fresh VPS. This step cannot be automated — it creates the user and installs the SSH key before anything else can run.
 
@@ -56,7 +62,7 @@ Log out of root. Everything from here runs as `vazir`.
 
 ---
 
-## Step 2 — Clone repo
+### Step 2 — Clone repo
 
 ```bash
 git clone <repo-url> ~/nizam-dotfiles
@@ -75,7 +81,7 @@ cd ~/nizam-dotfiles && git push  # confirm push works
 
 ---
 
-## Step 3 — Run `001-machine-setup.sh`
+### Step 3 — Run `001-machine-setup.sh`
 
 ```bash
 sudo bash ~/nizam-dotfiles/scripts/setup/001-machine-setup.sh
@@ -95,7 +101,7 @@ Takes 5–10 minutes. The script is idempotent — if it fails partway, fix the 
 
 ---
 
-## Step 4 — Post-script manual steps
+### Step 4 — Post-script manual steps
 
 **Open a new shell** — zsh and zinit bootstrap on first launch.
 
@@ -122,7 +128,7 @@ sudo ufw status  # expected: no rule for port 22
 
 ---
 
-## Step 5 — Grafana setup
+### Step 5 — Grafana setup
 
 Open Grafana at `http://<tailscale-ip>:3000` and change the default `admin/admin` password immediately.
 
@@ -142,11 +148,11 @@ Fill `DISCORD_WEBHOOK_WARNING` and `DISCORD_WEBHOOK_CRITICAL` in `secrets/nizam-
 bash ~/nizam-dotfiles/scripts/setup/setup-alerts.sh
 ```
 
-See [Alerts](001-system-dashboard.md#alerts) for contact points, notification policy, and alert rules.
+See [Alerts](DASHBOARD.md#alerts) for contact points, notification policy, and alert rules.
 
 ---
 
-## Step 6 — Verify exit criteria
+### Step 6 — Verify exit criteria
 
 ```bash
 # SSH hardening
@@ -189,8 +195,8 @@ tailscale status  # → nizam-vps  <tailscale-ip>  ...  online
 
 ---
 
-## What's next
+### What's next
 
 Machine is ready. Continue with:
 
-**[Nizam OS — Phase 1 Foundation](../../nizam-os/docs/guides/001-foundation-guide.md):** PostgreSQL, Redis, LiteLLM, audit schema, systemd units, Grafana personal dashboard.
+**[Nizam OS — rebuild plan](../../nizam-os/export/00-START-HERE.md):** the nizam-os app is being rebuilt from scratch on top of this machine (old repo abandoned, see that doc's Phase 1 onward — PostgreSQL, Redis, LiteLLM, the `nizam` package, Hermes agents, Grafana).

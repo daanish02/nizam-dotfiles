@@ -39,7 +39,7 @@ All five write Prometheus textfiles to `/var/lib/prometheus/node-exporter/`. nod
 
 ## Dashboard import
 
-Grafana, Prometheus, Loki, and Promtail are installed in `docs/001-machine-setup-guide.md`. Once running:
+Grafana, Prometheus, Loki, and Promtail are installed by [RUNBOOK → Machine setup](RUNBOOK.md#machine-setup-fresh-vps). Once running:
 
 1. Connections → Data Sources → Add → **Prometheus** — URL: `http://localhost:9090`, UID: `nizam-prometheus` → Save & Test
 2. Connections → Data Sources → Add → **Loki** — URL: `http://localhost:3100`, UID: `nizam-loki` → Save & Test

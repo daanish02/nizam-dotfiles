@@ -8,7 +8,7 @@ Every service in **nizam-os** depends on a baseline that is already hardened, al
 
 ## Goals
 
-**Reproducible setup.** A fresh Ubuntu 24.04 VPS reaches a ready, verified state by following one guide. No tribal knowledge, no manual steps outside the guide.
+**Reproducible setup.** A fresh Ubuntu 24.04 VPS reaches a ready, verified state by following one runbook section. No tribal knowledge, no manual steps outside it.
 
 **Security from first boot.** SSH is hardened, a firewall is active, and brute-force mitigation is running before any application is installed. The public SSH port is eliminated once Tailscale is up — the server becomes invisible to internet scanners entirely.
 
@@ -29,7 +29,7 @@ Every service in **nizam-os** depends on a baseline that is already hardened, al
 
 ## Success criteria
 
-- A fresh VPS reaches a ready machine state via [MACHINE SETUP GUIDE](docs/001-machine-setup-guide.md) with no steps outside that guide.
+- A fresh VPS reaches a ready machine state via [RUNBOOK → Machine setup](RUNBOOK.md#machine-setup-fresh-vps) with no steps outside it.
 - Public SSH port is closed. The server is reachable only over Tailscale.
 - `systemctl is-active prometheus prometheus-node-exporter grafana-server loki promtail fail2ban metrics-security.timer metrics-processes.timer metrics-disk.timer metrics-sessions.timer metrics-services.timer` → all active.
 - The system dashboard is live in Grafana showing real metric and log data before nizam-os installs.
